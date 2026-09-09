@@ -1,0 +1,7 @@
+# Serve the homepage at the site root.
+#
+# wrangler.jsonc sets html_handling: "none" so that /loans.html and friends are
+# served at exactly the URLs the site links to, the canonicals declare and the
+# sitemap lists. That mode does not map "/" to "/index.html" on its own, so do
+# it here as a 200 rewrite (not a redirect) to keep the root URL intact.
+/    /index.html    200

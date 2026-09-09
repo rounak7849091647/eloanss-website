@@ -1,0 +1,22 @@
+{
+  // Cloudflare deployment config for the generated static site.
+  // Deploy with:  node build.js && npx wrangler deploy
+  "name": "eloanss-website",
+  "compatibility_date": "2026-09-09",
+  "assets": {
+    "directory": "./dist",
+
+    // This is a multi-page static site, not a single-page app.
+    // "single-page-application" would serve index.html for every unknown URL
+    // and return HTTP 200 for pages that do not exist, which search engines
+    // treat as soft-404s. "none" returns a real 404 instead.
+    "not_found_handling": "none",
+
+    // Every internal link, every <link rel="canonical"> and every sitemap entry
+    // uses an explicit .html path. The default "auto-trailing-slash" 307-redirects
+    // /loans.html -> /loans, which would put a redirect hop on every navigation and
+    // leave the canonical URLs pointing at a different URL than the one served.
+    // "none" serves the .html paths as-is.
+    "html_handling": "none"
+  }
+}

@@ -241,8 +241,28 @@ After any edit run `node build.js` and redeploy `dist/`.
 
 ## Deploy
 
-Upload the contents of **`dist/`** to any static host. Point `eloanss.com` at it.
-Update the domain in `src/data.js` (`site.domain`) if it ever changes.
+Live on Cloudflare: **https://eloanss-website.ronith9999.workers.dev**
+
+```bash
+node build.js          # regenerate dist/
+npx wrangler deploy    # push dist/ to Cloudflare
+```
+
+`wrangler.jsonc` holds the config. Two settings matter and should not be changed casually:
+
+- **`html_handling: "none"`** — the site links to explicit `.html` paths, and those are what
+  the `<link rel="canonical">` tags and `sitemap.xml` declare. The default
+  `auto-trailing-slash` 307-redirects `/loans.html` to `/loans`, which puts a redirect hop on
+  every navigation and serves each page at a URL its own canonical disagrees with.
+- **`not_found_handling: "none"`** — returns a real 404 for unknown paths. The
+  `single-page-application` mode would serve `index.html` with HTTP 200 for every bad URL,
+  which search engines treat as a soft 404.
+
+`html_handling: "none"` does not map `/` to `/index.html`, so `public/_redirects` does that
+as a 200 rewrite. `public/` is copied verbatim into `dist/` by the build.
+
+The output is plain static files, so any other host works too — upload the contents of
+**`dist/`**. Update the domain in `src/data.js` (`site.domain`) when you point a real domain at it.
 
 ## Notes / next steps
 
