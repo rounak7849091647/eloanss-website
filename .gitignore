@@ -1,0 +1,16 @@
+# dependencies
+node_modules/
+
+# local editor / tooling config
+.vscode/
+.idea/
+.claude/
+
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# logs
+*.log
+npm-debug.log*
