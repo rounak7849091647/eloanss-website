@@ -39,7 +39,9 @@ function head({ title, description, path }) {
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='22' fill='%23075E45'/%3E%3Ctext x='50' y='70' font-family='Poppins,sans-serif' font-size='60' font-weight='800' fill='%23C9A227' text-anchor='middle'%3EE%3C/text%3E%3C/svg%3E">
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/img/brand/favicon-32.png">
+<link rel="icon" type="image/png" sizes="180x180" href="/assets/img/brand/favicon-180.png">
+<link rel="apple-touch-icon" href="/assets/img/brand/favicon-180.png">
 <script>(function(){try{var t=localStorage.getItem("eloanss-theme");if(t==="dark"||t==="light"||t==="navy")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <link rel="stylesheet" href="/assets/css/styles.css?v=${CSS_V}">
 <script type="application/ld+json">
@@ -50,10 +52,17 @@ function head({ title, description, path }) {
 }
 
 /* ---- Brand --------------------------------------------------------------- */
-const brand = (href = "/", variant = "") => `<a class="brand ${variant}" href="${href}" aria-label="${site.name} home">
-  <span class="brand__mark">E</span>
-  <span class="brand__txt"><span class="brand__name">ELOAN<span class="brand__ss">SS</span></span><span class="brand__tag">Compare · Apply · Grow</span></span>
+/* kind: "lockup" = icon + wordmark (header, tight vertical space)
+        "full"   = icon + wordmark + tagline (footer, more room) */
+const brand = (href = "/", variant = "", kind = "lockup") => {
+  const file = kind === "full" ? "logo-full" : "logo-lockup";
+  return `<a class="brand brand--${kind} ${variant}" href="${href}" aria-label="${site.name} home">
+  <picture>
+    <source type="image/webp" srcset="/assets/img/brand/${file}.webp">
+    <img src="/assets/img/brand/${file}.png" alt="${site.name}" decoding="async">
+  </picture>
 </a>`;
+};
 
 /* ---- Header: utility bar + dark primary nav ------------------------------ */
 function header(active = "") {
@@ -203,7 +212,7 @@ function footer() {
   <div class="container">
     <div class="footer__top">
       <div class="footer__brandcol">
-        ${brand("/", "brand--light")}
+        ${brand("/", "brand--light", "full")}
         <p class="footer__about">${site.tagline}. We compare offers from ${site.partners} banks and NBFCs so you get the best deal — fast, transparent and expert-guided.</p>
         <ul class="footer__contact">
           <li>${icons.mapPin}<span>${site.address}</span></li>
