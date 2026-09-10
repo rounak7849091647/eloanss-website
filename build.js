@@ -88,6 +88,7 @@ function build() {
   written.push(write("credit-score.html", P.creditScorePage()));
   written.push(write("calculators.html", P.calculatorsPage()));
   written.push(write("investments.html", P.investmentsPage()));
+  written.push(write("business-finance.html", P.businessFinancePage()));
 
   loans.forEach((l) => written.push(write(`loans/${l.slug}.html`, P.loanPage(l))));
   insurance.forEach((i) => written.push(write(`insurance/${i.slug}.html`, P.insurancePage(i))));

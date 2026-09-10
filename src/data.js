@@ -601,7 +601,7 @@ const footerCols = [
   ["Insurance", [["Life Insurance", "/insurance/life-insurance.html"], ["Health Insurance", "/insurance/health-insurance.html"], ["Term Insurance", "/insurance/term-insurance.html"], ["Motor Insurance", "/insurance/vehicle-insurance.html"], ["Travel Insurance", "/insurance/travel-insurance.html"], ["Property Insurance", "/insurance/property-insurance.html"], ["Heavy Vehicle", "/insurance/heavy-vehicle-insurance.html"], ["All Insurance", "/insurance.html"]]],
   ["Calculators", [["EMI Calculator", "/calculators.html#emi"], ["Eligibility Calculator", "/calculators.html#eligibility"], ["Loan Comparison", "/loans.html"], ["Balance Transfer", "/loans/home-loan.html"], ["Credit Score Check", "/credit-score.html"]]],
   ["Investments", [["Mutual Funds", "/investments.html"], ["Fixed Deposit", "/investments.html"], ["Digital Gold", "/investments.html"], ["Bonds", "/investments.html"], ["Share Markets", "/share-markets.html"]]],
-  ["Quick Links", [["Banks & NBFCs", "/banks.html"], ["Credit Cards", "/credit-cards.html"], ["Global Distributor", "/partner.html"], ["Resources", "/blog.html"], ["About Us", "/about.html"], ["How It Works", "/how-it-works.html"], ["Contact Us", "/contact.html"]]],
+  ["Quick Links", [["Business Finance", "/business-finance.html"], ["Banks & NBFCs", "/banks.html"], ["Credit Cards", "/credit-cards.html"], ["Global Distributor", "/partner.html"], ["Resources", "/blog.html"], ["About Us", "/about.html"], ["How It Works", "/how-it-works.html"], ["Contact Us", "/contact.html"]]],
   ["Legal", [["Privacy Policy", "/privacy.html"], ["Terms & Conditions", "/terms.html"], ["Disclaimer", "/disclaimer.html"], ["Grievance Redressal", "/grievance.html"], ["Sitemap", "/sitemap.xml"]]],
 ];
 
@@ -642,6 +642,12 @@ const loanCatalogue = [
       "Invoice Financing", "Purchase Order Financing",
       ["OD / Overdraft Facility", "/loans/overdraft-loan.html"],
       "Business Loan Balance Transfer",
+      ["Cash Credit (CC)", "/business-finance.html"],
+      ["Term Loan", "/business-finance.html"],
+      ["CGTMSE / MSME Funding", "/business-finance.html"],
+      ["Cash-Flow Based Lending", "/business-finance.html"],
+      ["GST & Banking-Based Funding", "/business-finance.html"],
+      ["Structured Business Finance", "/business-finance.html"],
     ],
   },
   {
@@ -708,6 +714,15 @@ const loanCatalogue = [
       ["Medical Equipment Loan", "/loans/project-loan.html"],
       "Professional Loan", "Doctor Loan", "Chartered Accountant / Professional Loan",
       "Franchise Loan", "School / Educational Institution Loan", "Healthcare Business Loan",
+    ],
+  },
+  {
+    group: "Trade & Banking Facilities", icon: "bank", href: "/business-finance.html",
+    blurb: "Non-fund-based limits and enhancements alongside your working capital.",
+    items: [
+      "Bank Guarantee (BG)", "Letter of Credit (LC)", "GST-Based OD", "POS-Based OD",
+      "Working Capital Limits", "CC / OD Enhancement", "Takeover & Balance Transfer",
+      "Lease Rental Discounting (LRD)", "Warehouse Stock OD",
     ],
   },
   {
@@ -976,8 +991,90 @@ const lenderProfiles = {
     intro: "Technology-led NBFC lending across personal, education and small-business finance." },
 };
 
+/* ==========================================================================
+   ADVANCE WORKING CAPITAL FINANCE SOLUTIONS
+   B2B offering for MSME / SME / mid-corporate. Product names and copy are
+   reproduced verbatim from the brief, including the exclusions ("Excluding
+   Bullion Traders", "Non-Mining") and every asterisk, which qualify the
+   figures against the note in `eligibilityNote` and `disclaimer` below.
+   ========================================================================== */
+const businessFinance = {
+  kicker: "Advance Working Capital Finance Solutions",
+  segments: "PAN-India Funding Solutions | MSME | SME | Mid-Corporate",
+  rangeHeadline: "₹10 Lakhs to ₹100 Crores*",
+  rangeNote: "Customized funding based on business profile & eligibility",
+
+  workingCapital: [
+    "Cash Credit (CC)", "Overdraft (OD)", "Working Capital Finance",
+    "Business Loans – Secured & Unsecured", "Term Loans", "Loan Against Property (LAP)",
+    "Machinery & Equipment Finance", "Project & Infrastructure Finance",
+    "CGTMSE / MSME Funding Solutions", "Cash-Flow Based Lending",
+    "GST & Banking-Based Funding", "Business Expansion Finance",
+    "Balance Transfer & Takeover", "Top-Up Funding", "Structured Business Finance",
+  ],
+
+  specialized: [
+    "Jewellers – Excluding Bullion Traders", "Fuel Stations & Gas Agencies",
+    "Transport, Logistics & Shipping", "Government & Civil Contractors",
+    "EPC & Telecom Contractors", "Infrastructure & Project Businesses",
+    "Poultry, Dairy & Seafood Businesses", "Agriculture & Agro-Based Businesses",
+    "Rice, Dal & Cotton Mills", "Agro Processing Units",
+    "Wholesale & Retail Businesses", "Iron & Steel / Coal-Linked Industries – Non-Mining",
+    "Heavy Equipment Dealers & Manufacturers", "Warehousing & Cold Storage",
+    "Doctors, Clinics & Healthcare Businesses", "Hotels & Restaurants",
+    "Eligible Hospitality Businesses",
+  ],
+
+  agriculture: [
+    "Agriculture Finance", "Crop Loans", "Agriculture LAP", "Warehouse Stock OD",
+    "Agro Processing Finance", "Poultry & Dairy Finance",
+    "Rice / Dal / Cotton Mill Finance", "Rural Business Funding",
+  ],
+
+  lapProperties: [
+    ["Residential Property", "home"], ["Commercial Property", "building2"],
+    ["Industrial Property / Factory", "building"], ["Vacant Land / Open Plots", "landPlot"],
+    ["Rental Income-Generating Properties", "coins"],
+  ],
+  lapFacilities: [
+    "LAP for Salaried & Business Customers", "LAP Balance Transfer", "LAP Top-Up",
+    "Lease Rental Discounting (LRD)", "OD/CC Enhancement Against Property",
+    "Competitive LTV Structure*",
+  ],
+
+  trade: [
+    "Bank Guarantee (BG)", "Letter of Credit (LC)", "GST-Based OD", "POS-Based OD",
+    "Working Capital Limits", "CC / OD Enhancement", "Takeover & Balance Transfer",
+  ],
+
+  eligibility: [
+    ["Loan Amount", "₹10 Lakhs – ₹100 Crores*", "rupee"],
+    ["Minimum Business Turnover", "₹60 Lakhs*", "trendingUp"],
+    ["Minimum Business Vintage", "1 Year*", "calendar"],
+    ["ROI", "Starting from 8.0% p.a.*", "percent"],
+    ["Open Plot Funding", "Starting from 9.0% p.a.*", "landPlot"],
+  ],
+  eligibilityNote:
+    "Subject to customer profile, credit assessment, property, banking, GST, financials and applicable policy norms.",
+
+  why: [
+    ["Competitive Pricing*", "scale"], ["Faster Processing & TAT*", "zap"],
+    ["Flexible Credit Assessment", "compass"], ["Cash-Flow-Based Lending", "chart"],
+    ["MSME & Mid-Corporate Expertise", "award"], ["End-to-End Documentation Assistance", "fileText"],
+    ["Dedicated Relationship Manager Support", "headset"], ["Pan-India Banking Network", "globe"],
+    ["Digital & Doorstep Assistance", "smartphone"],
+  ],
+
+  summaryLine:
+    "For Working Capital | CC/OD | Business Loans | Term Loans | LAP | Machinery Finance | CGTMSE | Agriculture & Crop Loans | BG/LC | Balance Transfer | Top-Up | Project Finance | Infrastructure Funding | Structured Business Finance",
+
+  disclaimer:
+    "Loans are subject to eligibility, documentation, credit approval, applicable terms, conditions and bank policy. Interest rates, loan amounts and processing timelines may vary based on the customer profile.",
+};
+
 module.exports = { site, loans, insurance, steps, testimonials, posts, partnerBenefits,
   goals, journeyNodes, lenders, lenderFilters, loanUniverse, insuranceMajor, insuranceMinor,
   whyPillars, investTabs, cardTypes, incomeBands, cardRewards, heroChips, distributorPoints,
   appPoints, footerCols, loanCatalogue, insuranceCatalogue, insuranceTrust,
-  lenderProfiles, LENDER_KIND, BANK_HIGHLIGHTS, NBFC_HIGHLIGHTS, GOLD_HIGHLIGHTS };
+  lenderProfiles, LENDER_KIND, BANK_HIGHLIGHTS, NBFC_HIGHLIGHTS, GOLD_HIGHLIGHTS,
+  businessFinance };

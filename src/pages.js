@@ -3,7 +3,7 @@ const { icons } = require("./icons");
 const { site, loans, insurance, steps, testimonials, posts, partnerBenefits,
   goals, lenders, lenderFilters, loanCatalogue, insuranceCatalogue, insuranceMajor, insuranceMinor,
   whyPillars, insuranceTrust, investTabs, cardTypes, incomeBands, cardRewards, heroChips, distributorPoints,
-  appPoints, lenderProfiles, LENDER_KIND, BANK_HIGHLIGHTS, NBFC_HIGHLIGHTS, GOLD_HIGHLIGHTS } = require("./data");
+  appPoints, businessFinance, lenderProfiles, LENDER_KIND, BANK_HIGHLIGHTS, NBFC_HIGHLIGHTS, GOLD_HIGHLIGHTS } = require("./data");
 const C = require("./components");
 
 const layout = (meta, active, body) => C.head(meta) + C.header(active) + body + C.footer();
@@ -519,7 +519,18 @@ function loansOverview() {
 </div></section>
 
 ${howItWorksStrip()}
-${catalogueSection(loanCatalogue, "loan-catalogue", "All 90 loan products we facilitate", "Eight categories, every product in each. Pick one to see rates, eligibility and documents.")}
+<section class="section"><div class="container">
+  <div class="banner reveal"><div class="banner__inner">
+    <div>
+      <span class="eyebrow">For businesses</span>
+      <h2>Working Capital &amp; Business Finance</h2>
+      <p>CC/OD, term loans, LAP, machinery finance, CGTMSE, BG/LC and project funding for MSME, SME and mid-corporate businesses — ₹10 Lakhs to ₹100 Crores.*</p>
+    </div>
+    <a class="btn btn--gold btn--lg" href="/business-finance.html">Explore Business Finance ${icons.arrowRight}</a>
+  </div></div>
+</div></section>
+
+${catalogueSection(loanCatalogue, "loan-catalogue", "All 105 loan products we facilitate", "Nine categories, every product in each. Pick one to see rates, eligibility and documents.")}
 
 ${ctaBand("Not sure which loan is right for you?", "Talk to an ELOANSS expert. We'll understand your needs and recommend the best option — free and without obligation.")}`;
 
@@ -1543,8 +1554,145 @@ ${ctaBand(`Get your ${name} offer — and everyone else's`, "One application, co
   }, "banks", body);
 }
 
+/* ==================================================== BUSINESS FINANCE PAGE */
+function businessFinancePage() {
+  const B = businessFinance;
+  const chips = (arr) => arr.map((t) => `<li>${icons.check}<span>${t}</span></li>`).join("");
+
+  const elig = B.eligibility.map(([label, value, ic], k) => `<div class="eligcard reveal" data-d="${k % 4}">
+      <span class="eligcard__ic">${icons[ic]}</span>
+      <b>${value}</b><span>${label}</span>
+    </div>`).join("");
+
+  const why = B.why.map(([t, ic], k) => `<div class="whycard reveal" data-d="${k % 4}">
+      <span class="whycard__ic">${icons[ic]}</span><span>${t}</span>
+    </div>`).join("");
+
+  const props = B.lapProperties.map(([t, ic], k) => `<div class="propcard reveal" data-d="${k % 4}">
+      <span class="propcard__ic">${icons[ic]}</span><b>${t}</b>
+    </div>`).join("");
+
+  const faqs = [
+    ["How much can my business borrow?",
+      `Facilities run from ${B.rangeHeadline.replace("*", "")} depending on your profile. The size you qualify for is driven by turnover, banking conduct, GST filings, financials and — where the facility is secured — the property offered.`],
+    ["What is the difference between CC/OD and a term loan?",
+      "Cash Credit and Overdraft are revolving limits: you draw what you need, repay, and draw again, with interest only on the amount used. A term loan is a fixed sum repaid over a set schedule. Working capital cycles usually suit CC/OD; asset purchases usually suit a term loan."],
+    ["What is CGTMSE funding?",
+      "A credit guarantee scheme that lets eligible MSMEs borrow without conventional collateral, with the guarantee cover standing in its place. Eligibility and cover are set by the scheme and the lender, not by us."],
+    ["Do you arrange Bank Guarantees and Letters of Credit?",
+      "Yes — BG and LC are part of the trade and banking facilities we place, alongside GST-based and POS-based overdrafts and CC/OD enhancements."],
+    ["Is the 8.0% p.a. rate guaranteed?",
+      `No. That is an indicative starting point, marked with an asterisk throughout. ${B.eligibilityNote} ${site.name} is a facilitator — the rate, the limit and the approval are the lender's decision.`],
+    ["Which businesses do you not fund?",
+      "The specialised list carries its own carve-outs: bullion traders are excluded from jewellery-sector funding, and coal-linked industry funding excludes mining. Beyond that, eligibility depends on the lender's sector policy at the time of application."],
+  ];
+
+  const body = `
+<section class="phero"><div class="container"><div class="phero__inner">
+  <div>
+    ${crumbs([["Home", "/index.html"], ["Loans", "/loans.html"], ["Business Finance"]])}
+    <span class="pill" style="margin-bottom:14px">${icons.briefcase} ${B.kicker}</span>
+    <h1>Working Capital &amp; Business Finance</h1>
+    <p>${B.segments}</p>
+    <div class="hero__cta" style="margin-top:24px">
+      <a class="btn btn--gold btn--lg" href="#enquire">Check Eligibility ${icons.arrowRight}</a>
+      <a class="btn btn--on-navy btn--lg" href="#facilities">View Facilities</a>
+    </div>
+    <div class="phero__stats">
+      <div class="phero__stat"><b>${B.rangeHeadline}</b><span>Funding range</span></div>
+      <div class="phero__stat"><b>Pan-India</b><span>Banking network</span></div>
+      <div class="phero__stat"><b>MSME → Mid-Corporate</b><span>Segments served</span></div>
+    </div>
+  </div>
+  <div class="phero__card reveal" data-d="1">
+    <span class="eyebrow" style="color:var(--gold)">Funding range</span>
+    <p class="bigrange">${B.rangeHeadline}</p>
+    <p style="font-size:.9rem;color:#b9dbcd;margin:0">${B.rangeNote}</p>
+  </div>
+</div></div></section>
+
+<section class="section" id="facilities"><div class="container">
+  <div class="section-head reveal"><span class="eyebrow">Core facilities</span><h2>Working Capital &amp; Business Finance</h2><p>The full set of facilities we arrange for operating businesses.</p></div>
+  <ul class="ticks ticks--cols reveal">${chips(B.workingCapital)}</ul>
+</div></section>
+
+<section class="section section--soft"><div class="container">
+  <div class="section-head reveal"><span class="eyebrow">Sector expertise</span><h2>Specialized business funding</h2><p>Sectors we place regularly, each with its own underwriting pattern.</p></div>
+  <ul class="ticks ticks--cols reveal">${chips(B.specialized)}</ul>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="split">
+    <div class="reveal">
+      <span class="eyebrow">Agriculture &amp; rural</span>
+      <h2>Agriculture &amp; Rural Finance</h2>
+      <p class="lead">Crop cycles, storage and processing carry their own cash-flow shape. These facilities are structured around it.</p>
+      <ul class="ticks ticks--lg">${chips(B.agriculture)}</ul>
+    </div>
+    <div class="reveal" data-d="1"><img style="border-radius:var(--r-xl)" src="https://images.unsplash.com/photo-1500937386664-56d1dfef3854?w=560&h=620&fit=crop" alt="Agricultural land" loading="lazy"></div>
+  </div>
+</div></section>
+
+<section class="section section--soft"><div class="container">
+  <div class="section-head reveal"><span class="eyebrow">Property-backed</span><h2>LAP &amp; Property-Backed Funding</h2><p>Property types we lend against, and the facilities available on them.</p></div>
+  <div class="propgrid">${props}</div>
+  <ul class="ticks ticks--cols reveal" style="margin-top:26px">${chips(B.lapFacilities)}</ul>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="section-head reveal"><span class="eyebrow">Trade &amp; banking</span><h2>Trade &amp; Banking Facilities</h2><p>Non-fund-based limits and enhancements alongside your working capital.</p></div>
+  <ul class="ticks ticks--cols reveal">${chips(B.trade)}</ul>
+</div></section>
+
+<section class="section section--soft"><div class="container">
+  <div class="section-head reveal"><span class="eyebrow">Eligibility indicators</span><h2>What lenders look for</h2><p>Indicative only — every figure below is subject to assessment.</p></div>
+  <div class="eliggrid">${elig}</div>
+  <div class="narrow reveal" style="margin-top:30px">
+    <div class="note"><span class="ic">${icons.info}</span><div><b>Indicative figures.</b><p>${B.eligibilityNote}</p></div></div>
+  </div>
+</div></section>
+
+<section class="section"><div class="container">
+  <div class="section-head reveal"><span class="eyebrow">Why choose us</span><h2>How we work</h2><p>What you get by placing the mandate through ${site.name}.</p></div>
+  <div class="whygrid">${why}</div>
+</div></section>
+
+<section class="section section--soft" id="enquire"><div class="container">
+  <div class="contact-grid">
+    <div class="reveal">
+      <span class="eyebrow">Eligibility assessment</span>
+      <h2>Connect for eligibility &amp; funding options</h2>
+      <p class="lead">${B.summaryLine}</p>
+      <ul class="ticks ticks--lg">
+        <li>${icons.checkCircle}<span>One assessment, placed across our pan-India banking network</span></li>
+        <li>${icons.checkCircle}<span>No cost to you — the lender pays our commission</span></li>
+        <li>${icons.checkCircle}<span>End-to-end documentation assistance</span></li>
+      </ul>
+      <div class="mt reveal">
+        <a class="btn btn--navy" href="tel:${site.phoneHref}">${icons.phone} ${site.phone}</a>
+      </div>
+    </div>
+    <div class="reveal" data-d="1">${C.applicationForm()}</div>
+  </div>
+</div></section>
+
+<section class="section"><div class="container narrow reveal">
+  <div class="note"><span class="ic">${icons.info}</span><div><b>Important.</b><p>${B.disclaimer}</p></div></div>
+</div></section>
+
+${C.faqSection(faqs, "Business finance — frequently asked")}
+${ctaBand("Ready to size your facility?", "Send us your turnover, banking and GST position and we will come back with the structures and lenders that fit.", "Check Eligibility", "#enquire")}`;
+
+  return layout({
+    title: "Working Capital & Business Finance — ₹10 Lakhs to ₹100 Crores",
+    description: `${B.kicker}. CC, OD, working capital, term loans, LAP, machinery finance, CGTMSE, BG/LC and project finance for MSME, SME and mid-corporate businesses across India.`,
+    path: "business-finance.html",
+  }, "bizfin", body);
+}
+
 module.exports = {
   home, loansOverview, loanPage, insuranceOverview, insurancePage, shareMarkets,
   about, partner, howItWorks, blog, blogPost, contact, legalPage,
   banksPage, creditCardsPage, creditScorePage, calculatorsPage, investmentsPage, bankPage,
+  businessFinancePage,
 };

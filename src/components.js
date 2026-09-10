@@ -125,7 +125,8 @@ function header(active = "") {
         <li class="pnav__item--has-menu">
           <a class="pnav__link ${na("loans")}" href="/loans.html">Loans ${icons.chevronDown}</a>
           <div class="mega mega--cols"><div class="container"><div class="mega__cols">${loanMega}</div>
-            <a class="mega__foot" href="/loans.html"><span>Browse all 90 loan products</span>${icons.arrowRight}</a></div></div>
+            <a class="mega__foot" href="/business-finance.html"><span>Working Capital &amp; Business Finance — ₹10 Lakhs to ₹100 Crores</span>${icons.arrowRight}</a>
+            <a class="mega__foot" href="/loans.html"><span>Browse all 105 loan products</span>${icons.arrowRight}</a></div></div>
         </li>
         <li><a class="pnav__link ${na("banks")}" href="/banks.html">Banks &amp; NBFCs</a></li>
         <li class="pnav__item--has-menu">

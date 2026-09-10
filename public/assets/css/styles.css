@@ -2057,3 +2057,52 @@ input[type="range"]::-webkit-slider-thumb { margin-top: 0; }
   background: #FFFFFF; border-radius: 14px; padding: 10px 16px;
   box-shadow: 0 2px 12px rgba(0,0,0,.28);
 }
+
+/* ==========================================================================
+   BUSINESS FINANCE PAGE
+   ========================================================================== */
+/* long product lists read better in columns than a single tall stack */
+.ticks--cols { grid-template-columns: repeat(3, 1fr); gap: 10px 28px; }
+
+.bigrange { font-family: var(--font-head); font-weight: 800; color: #fff;
+  font-size: clamp(1.5rem, 3vw, 2.1rem); line-height: 1.1; margin: 10px 0 8px; letter-spacing: -.02em; }
+
+.eliggrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+.eligcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: 20px 18px; text-align: center; box-shadow: var(--sh-sm); }
+.eligcard__ic { width: 44px; height: 44px; border-radius: 12px; margin: 0 auto 12px;
+  display: grid; place-items: center; background: var(--blue-050); color: var(--accent-ink); }
+.eligcard__ic svg { width: 21px; height: 21px; }
+.eligcard b { display: block; font-family: var(--font-head); font-weight: 700; font-size: 1.02rem;
+  color: var(--ink); line-height: 1.25; margin-bottom: 4px; }
+.eligcard span { font-size: .78rem; color: var(--muted); }
+
+.propgrid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; }
+.propcard { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-lg);
+  padding: 20px 14px; text-align: center; transition: .2s; }
+.propcard:hover { border-color: var(--accent-ink); transform: translateY(-4px); box-shadow: var(--sh); }
+.propcard__ic { width: 46px; height: 46px; border-radius: 50%; margin: 0 auto 10px;
+  display: grid; place-items: center; background: var(--navy-050); color: var(--accent-ink); }
+.propcard__ic svg { width: 22px; height: 22px; }
+.propcard b { font-family: var(--font-head); font-weight: 600; font-size: .84rem; color: var(--ink); line-height: 1.3; }
+
+.whygrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+.whycard { display: flex; align-items: center; gap: 12px; background: var(--surface);
+  border: 1px solid var(--line); border-radius: var(--r); padding: 15px 18px; }
+.whycard span:last-child { font-family: var(--font-head); font-weight: 600; font-size: .9rem; color: var(--ink); }
+.whycard__ic { width: 40px; height: 40px; border-radius: 11px; flex: none; display: grid; place-items: center;
+  background: var(--blue-050); color: var(--accent-ink); }
+.whycard__ic svg { width: 19px; height: 19px; }
+
+@media (max-width: 1024px) {
+  .ticks--cols { grid-template-columns: repeat(2, 1fr); }
+  .eliggrid { grid-template-columns: repeat(3, 1fr); }
+  .propgrid { grid-template-columns: repeat(3, 1fr); }
+  .whygrid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 620px) {
+  .ticks--cols { grid-template-columns: 1fr; }
+  .eliggrid { grid-template-columns: 1fr 1fr; }
+  .propgrid { grid-template-columns: 1fr 1fr; }
+  .whygrid { grid-template-columns: 1fr; }
+}

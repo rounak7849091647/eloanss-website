@@ -7,7 +7,7 @@ Pages, S3, cPanel, or any web host) with no runtime or database.
 
 - **Brand:** Deep Emerald `#075E45` · Soft Gold `#C9A227` · Warm Ivory `#FAF9F4`
 - **Fonts:** Poppins (headings) + Inter (body) via Google Fonts
-- **63 pages** generated: Home, Loans (overview + 12 loan types), Insurance (overview +
+- **64 pages** generated: Home, Loans (overview + 12 loan types), Insurance (overview +
   7 types), Banks & NBFCs (overview + a page per partner), Credit Cards, Credit Score,
   Calculators, Investments,
   Share Markets, About, Partner (Global Distributor), How It Works, Blog
@@ -143,7 +143,7 @@ gold button 6.4:1, nav 11:1, footer 12.9:1.
 
 ## Product catalogue
 
-The full taxonomy lives in `src/data.js` as `loanCatalogue` (8 groups / 90 products) and
+The full taxonomy lives in `src/data.js` as `loanCatalogue` (9 groups / 105 products) and
 `insuranceCatalogue` (15 groups / 177 products, plus 16 riders and motor add-ons).
 
 Each group carries a default `href` — the closest detailed page. An item is either a plain
@@ -162,6 +162,20 @@ Adding a product is a one-line edit to the relevant `items` array; every surface
 Only the 19 products with genuine page-level depth (rates, eligibility, documents, FAQs)
 have their own generated pages — `loans` and `insurance` in `data.js`. To promote a
 catalogue entry, add a full record there and point the catalogue item at its new slug.
+
+### Business Finance
+
+`/business-finance.html` carries the B2B working-capital offering (MSME / SME /
+mid-corporate, ₹10 Lakhs to ₹100 Crores). Content lives in `businessFinance` in
+`src/data.js` and is reproduced verbatim from the brief — including the sector carve-outs
+(“Excluding Bullion Traders”, “Non-Mining”) and every asterisk.
+
+**The asterisks matter.** The page quotes indicative figures — ₹60 Lakhs minimum turnover,
+1 year vintage, ROI from 8.0% p.a., open plot from 9.0% p.a. Each is marked, and both
+`eligibilityNote` and `disclaimer` render on the page. Do not drop either when editing.
+
+Entry points: the Loans mega-menu, footer Quick Links, and a banner on the Loans overview.
+The primary nav is left alone — its 14 items already fill the bar exactly at 1360px.
 
 ### Partner pages
 
