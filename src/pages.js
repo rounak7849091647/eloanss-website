@@ -132,6 +132,7 @@ function home() {
         <a class="btn btn--outline-light btn--lg" href="/credit-score.html">Check Free Credit Score</a>
       </div>
       <ul class="vhero__chips">${chips}</ul>
+      ${C.callbackForm()}
     </div>
   </div>
   <div class="vhero__statbar">
@@ -165,6 +166,14 @@ function home() {
         <div class="goals__sign goals__sign--r"><b>Different Goals</b><b>One Destination</b><span>ELOANSS</span></div>
       </div>
     </div>
+  </div>
+</section>
+
+<!-- ============================================ LOAN MATCHER -->
+<section class="section section--soft" id="matcher">
+  <div class="container">
+    <div class="section-head reveal"><span class="eyebrow">Not sure where to start?</span><h2>Find your loan in four questions</h2><p>Answer four quick questions and we will shortlist the products worth checking first.</p></div>
+    <div class="narrow reveal">${C.loanMatcher()}</div>
   </div>
 </section>
 
@@ -493,7 +502,9 @@ function contactBlock() {
 
 /* ============================================================= LOAN OVERVIEW */
 function loansOverview() {
-  const cards = loans.map((l, k) => `<div class="card reveal" data-d="${k % 3}">
+  const cards = loans.map((l, k) => `<div class="card reveal" data-d="${k % 3}" data-cmp-item="${l.slug}"
+      data-cmp-name="${l.name.replace(" / Mortgage Loan", " / Mortgage")}" data-cmp-rate="${l.rate} p.a." data-cmp-amount="${l.amount}" data-cmp-tenure="${l.tenure}">
+    <label class="cmpcheck"><input type="checkbox" data-cmp-toggle><span>Compare</span></label>
     <span class="card__ic">${icons[l.icon]}</span>
     <h3>${l.name.replace(" / Mortgage Loan", " / Mortgage")}</h3>
     <p>${l.tagline}</p>
@@ -533,6 +544,8 @@ ${howItWorksStrip()}
     <a class="btn btn--gold btn--lg" href="/business-finance.html">Explore Business Finance ${icons.arrowRight}</a>
   </div></div>
 </div></section>
+
+${C.compareTray()}
 
 ${catalogueSection(loanCatalogue, "loan-catalogue", "All 105 loan products we facilitate", "Nine categories, every product in each. Pick one to see rates, eligibility and documents.")}
 
@@ -1717,9 +1730,63 @@ ${ctaBand("Ready to size your facility?", "Send us your turnover, banking and GS
   }, "bizfin", body);
 }
 
+/* ============================================== TRACK APPLICATION (demo) */
+function trackApplicationPage() {
+  const stages = [
+    ["Application received", "We have your details and documents.", "fileText"],
+    ["Under review", "Our advisor is matching you to the right lenders.", "search"],
+    ["Submitted to lender", "Your file is with the lender for credit assessment.", "bank"],
+    ["Sanction decision", "The lender confirms the amount, rate and terms.", "checkCircle"],
+    ["Disbursal", "Funds are released to your account.", "rupee"],
+  ].map(([t, d, ic], k) => `<li class="trk__step" data-trk-step="${k}">
+      <span class="trk__dot">${icons[ic]}</span>
+      <div><b>${t}</b><span>${d}</span></div>
+    </li>`).join("");
+
+  const body = `
+<section class="phero"><div class="container"><div class="phero__inner"><div>
+  ${crumbs([["Home", "/index.html"], ["Track Application"]])}
+  <h1>Track Your Application</h1>
+  <p>Enter your reference number to see where your file has reached.</p>
+</div>
+<div class="phero__card reveal" data-d="1">
+  <form class="trkform" data-trackform>
+    <div class="field"><label for="trkref">Application reference</label>
+      <input class="input" id="trkref" name="ref" required placeholder="e.g. ELN-2026-014529" autocomplete="off"></div>
+    <button class="btn btn--gold btn--block" type="submit">Track ${icons.arrowRight}</button>
+    <p class="trkform__hint">${icons.info} Demonstration only — this page is not yet wired to a live application system. Any reference in the format <b>ELN-YYYY-NNNNNN</b> returns a sample timeline.</p>
+  </form>
+</div></div></div></section>
+
+<section class="section"><div class="container narrow">
+  <div class="trk" data-trk hidden>
+    <div class="trk__head">
+      <div><span class="eyebrow">Reference</span><b data-trk-ref></b></div>
+      <span class="pill" data-trk-status></span>
+    </div>
+    <ol class="trk__steps">${stages}</ol>
+    <p class="trk__note">${icons.info} Sample data. Timelines vary by lender and by how quickly documents are supplied.</p>
+    <a class="btn btn--blue" href="/contact.html">Talk to my advisor ${icons.arrowRight}</a>
+  </div>
+  <div class="trk__empty reveal" data-trk-empty>
+    <span class="trk__eic">${icons.search}</span>
+    <h3>No reference yet?</h3>
+    <p>You receive a reference by SMS as soon as an application is submitted. If you have applied and not received one, call us on <a href="tel:${site.phoneHref}">${site.phone}</a> and we will look it up.</p>
+  </div>
+</div></section>
+
+${ctaBand("Not applied yet?", "Start with a free eligibility check — it takes two minutes and puts no hard enquiry on your credit report.", "Check Eligibility", "/contact.html")}`;
+
+  return layout({
+    title: "Track Your Application",
+    description: `Check the status of your ${site.name} loan or insurance application with your reference number.`,
+    path: "track-application.html",
+  }, "track", body);
+}
+
 module.exports = {
   home, loansOverview, loanPage, insuranceOverview, insurancePage, shareMarkets,
   about, partner, howItWorks, blog, blogPost, contact, legalPage,
   banksPage, creditCardsPage, creditScorePage, calculatorsPage, investmentsPage, bankPage,
-  businessFinancePage,
+  businessFinancePage, trackApplicationPage,
 };

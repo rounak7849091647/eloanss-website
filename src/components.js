@@ -1,6 +1,7 @@
 /* ELOANSS — shared HTML components */
 const { icons } = require("./icons");
-const { site, loans, insurance, loanCatalogue, insuranceCatalogue, footerCols } = require("./data");
+const { site, loans, insurance, loanCatalogue, insuranceCatalogue, footerCols,
+  matcherQuestions, matcherProfiles } = require("./data");
 
 const fsx = require("fs");
 const pathx = require("path");
@@ -110,7 +111,7 @@ function header(active = "") {
       </form>
       <div class="util__acts">
         <a class="util__link" href="/contact.html">${icons.headset}<span>Support</span></a>
-        <a class="util__link" href="/contact.html">${icons.fileText}<span>Track Application</span></a>
+        <a class="util__link" href="/track-application.html">${icons.fileText}<span>Track Application</span></a>
         <a class="btn btn--blue btn--sm" href="/contact.html">${icons.arrowRight} Apply Now</a>
         <button class="themebtn" data-theme-toggle aria-label="Switch between light and dark theme" title="Switch theme"><span class="themebtn__sun">${icons.sun}</span><span class="themebtn__moon">${icons.moon}</span><span class="themebtn__navy">${icons.navyTheme}</span></button>
         <button class="util__grid" aria-label="All products" data-jump="#universe">${icons.grid}</button>
@@ -281,6 +282,18 @@ function footer() {
 ${floatingActions()}
 ${cookieBanner()}
 ${exitModal()}
+${trustTicker()}
+<script>
+window.__ELOANSS_MATCH=${JSON.stringify(matcherProfiles)};
+window.__ELOANSS_LOANS=${JSON.stringify(loans.reduce((a, l) => (a[l.slug] = { name: l.name.replace(" / Mortgage Loan", " / Mortgage"), rate: l.rate + " p.a.", amount: l.amount }, a), {}))};
+window.__ELOANSS_TRUST=${JSON.stringify([
+  site.partners + " lending partners compared on every application",
+  site.disbursed + " in loans facilitated to date",
+  site.reviews + " verified reviews · " + site.rating + "/5 average",
+  "Checking your options never puts a hard enquiry on your credit report",
+  "Free for customers — our commission is paid by the lender",
+])};
+</script>
 <script src="/assets/js/app.js?v=${JS_V}" defer></script>
 </body>
 </html>`;
@@ -332,6 +345,80 @@ const cookieBanner = () => `<div class="cookiebar" role="dialog" aria-modal="fal
       <button class="btn btn--blue btn--sm" data-cookie="accept">Accept all</button>
     </div>
   </div>
+</div>`;
+
+/* ---- Loan Matcher --------------------------------------------------------
+   Deterministic scoring, rendered client-side. The result is framed as a
+   shortlist to check, never as an approval, an offer or a quoted rate. */
+function loanMatcher() {
+  const steps = matcherQuestions.map((q, k) => `<div class="mq ${k === 0 ? "is-active" : ""}" data-mq="${k}">
+      <span class="mq__count">Question ${k + 1} of ${matcherQuestions.length}</span>
+      <h3>${q.q}</h3>
+      <div class="mq__opts">
+        ${q.options.map(([label, value, ic]) => `<button type="button" class="mopt" data-mq-key="${q.id}" data-mq-val="${value}">
+          <span class="mopt__ic">${icons[ic] || icons.check}</span><span>${label}</span>
+        </button>`).join("")}
+      </div>
+    </div>`).join("");
+
+  return `<div class="matcher" data-matcher>
+    <div class="matcher__bar"><span data-mq-progress style="width:${100 / matcherQuestions.length}%"></span></div>
+    <div class="matcher__steps">${steps}</div>
+    <div class="matcher__result" data-mq-result hidden>
+      <span class="matcher__ic">${icons.checkCircle}</span>
+      <h3>Your shortlist</h3>
+      <p class="matcher__sub">Based on your answers. These are the products worth checking first — not an approval or an offer.</p>
+      <div class="matcher__cards" data-mq-cards></div>
+      <div class="matcher__acts">
+        <a class="btn btn--blue" href="/contact.html">Check my eligibility ${icons.arrowRight}</a>
+        <button class="btn btn--ghost" type="button" data-mq-restart>Start again</button>
+      </div>
+    </div>
+    <button class="matcher__back" type="button" data-mq-back hidden>${icons.chevronRight} Back</button>
+  </div>`;
+}
+
+/* ---- Compare tray --------------------------------------------------------
+   Sits on the loans overview. Selection is capped at three so the table stays
+   readable on a phone. */
+const compareTray = () => `<div class="cmptray" data-cmptray hidden>
+  <div class="container cmptray__in">
+    <span class="cmptray__count"><b data-cmp-count>0</b> selected <small>(up to 3)</small></span>
+    <div class="cmptray__chips" data-cmp-chips></div>
+    <div class="cmptray__acts">
+      <button class="btn btn--ghost btn--sm" type="button" data-cmp-clear>Clear</button>
+      <button class="btn btn--blue btn--sm" type="button" data-cmp-open>Compare ${icons.arrowRight}</button>
+    </div>
+  </div>
+</div>
+<div class="cmpmodal" data-cmpmodal role="dialog" aria-modal="true" aria-labelledby="cmt" hidden>
+  <div class="cmpmodal__card">
+    <div class="cmpmodal__head">
+      <h3 id="cmt">Compare loans</h3>
+      <button class="exitmodal__x" type="button" data-cmp-close aria-label="Close comparison">${icons.close}</button>
+    </div>
+    <div class="cmpmodal__body" data-cmp-table></div>
+    <p class="cmpmodal__note">${icons.info} Rates and amounts are indicative market ranges for each product. Your actual terms are set by the lender after assessment.</p>
+  </div>
+</div>`;
+
+/* ---- Callback strip ------------------------------------------------------ */
+const callbackForm = () => `<form class="callback" data-callback>
+  <span class="callback__lab">${icons.phone} Prefer we call you?</span>
+  <input class="callback__input" type="tel" name="mobile" required pattern="[0-9+ ]{10,15}" placeholder="Your mobile number" aria-label="Your mobile number">
+  <button class="btn btn--gold btn--sm" type="submit">Request a Callback</button>
+  <label class="callback__consent"><input type="checkbox" name="consent" required><span>I agree to the <a href="/privacy.html">Privacy Policy</a> and to being contacted.</span></label>
+  <span class="form-ok form-ok--inline" hidden>${icons.checkCircle} Thanks — an advisor will call you shortly.</span>
+</form>`;
+
+/* ---- Trust ticker --------------------------------------------------------
+   Rotates the figures ELOANSS actually publishes. Deliberately NOT fabricated
+   "someone just got approved" events: ELOANSS does not approve loans, and
+   inventing individual outcomes would be a false claim about lending. */
+const trustTicker = () => `<div class="ticker" data-ticker hidden>
+  <span class="ticker__ic">${icons.shield}</span>
+  <span data-ticker-text></span>
+  <button class="ticker__x" type="button" data-ticker-close aria-label="Dismiss">${icons.close}</button>
 </div>`;
 
 /* ---- Reusable sections --------------------------------------------------- */
@@ -462,4 +549,5 @@ function applicationForm(productName = "") {
 }
 
 module.exports = { head, header, footer, brand, floatingActions, complianceNote, emiCalculator, faqSection, applicationForm, waLink,
-  consentCheck, securityBadges, cookieBanner, exitModal };
+  consentCheck, securityBadges, cookieBanner, exitModal,
+  loanMatcher, compareTray, callbackForm, trustTicker };

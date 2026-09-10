@@ -601,7 +601,7 @@ const footerCols = [
   ["Insurance", [["Life Insurance", "/insurance/life-insurance.html"], ["Health Insurance", "/insurance/health-insurance.html"], ["Term Insurance", "/insurance/term-insurance.html"], ["Motor Insurance", "/insurance/vehicle-insurance.html"], ["Travel Insurance", "/insurance/travel-insurance.html"], ["Property Insurance", "/insurance/property-insurance.html"], ["Heavy Vehicle", "/insurance/heavy-vehicle-insurance.html"], ["All Insurance", "/insurance.html"]]],
   ["Calculators", [["EMI Calculator", "/calculators.html#emi"], ["Eligibility Calculator", "/calculators.html#eligibility"], ["Loan Comparison", "/loans.html"], ["Balance Transfer", "/loans/home-loan.html"], ["Credit Score Check", "/credit-score.html"]]],
   ["Investments", [["Mutual Funds", "/investments.html"], ["Fixed Deposit", "/investments.html"], ["Digital Gold", "/investments.html"], ["Bonds", "/investments.html"], ["Share Markets", "/share-markets.html"]]],
-  ["Quick Links", [["Business Finance", "/business-finance.html"], ["Banks & NBFCs", "/banks.html"], ["Credit Cards", "/credit-cards.html"], ["Global Distributor", "/partner.html"], ["Resources", "/blog.html"], ["About Us", "/about.html"], ["How It Works", "/how-it-works.html"], ["Contact Us", "/contact.html"]]],
+  ["Quick Links", [["Business Finance", "/business-finance.html"], ["Track Application", "/track-application.html"], ["Banks & NBFCs", "/banks.html"], ["Credit Cards", "/credit-cards.html"], ["Global Distributor", "/partner.html"], ["Resources", "/blog.html"], ["About Us", "/about.html"], ["How It Works", "/how-it-works.html"], ["Contact Us", "/contact.html"]]],
   ["Legal", [["Privacy Policy", "/privacy.html"], ["Terms & Conditions", "/terms.html"], ["Disclaimer", "/disclaimer.html"], ["Grievance Redressal", "/grievance.html"], ["Sitemap", "/sitemap.xml"]]],
 ];
 
@@ -1072,9 +1072,72 @@ const businessFinance = {
     "Loans are subject to eligibility, documentation, credit approval, applicable terms, conditions and bank policy. Interest rates, loan amounts and processing timelines may vary based on the customer profile.",
 };
 
+/* ==========================================================================
+   LOAN MATCHER
+   Four questions, scored against a profile per product. Deterministic and
+   client-side — no model, no guesswork, and the result is presented as a
+   shortlist to check rather than an approval or an offer.
+   ========================================================================== */
+const matcherQuestions = [
+  {
+    id: "purpose", q: "What do you need the funds for?",
+    options: [
+      ["Personal expense", "personal", "user"],
+      ["Business or working capital", "business", "briefcase"],
+      ["Home or property", "property", "home"],
+      ["A vehicle", "vehicle", "car"],
+      ["Against an asset I own", "asset", "gold"],
+    ],
+  },
+  {
+    id: "amount", q: "Roughly how much do you need?",
+    options: [
+      ["Under ₹5 Lakh", "s", "rupee"],
+      ["₹5 – 25 Lakh", "m", "rupee"],
+      ["₹25 Lakh – ₹1 Crore", "l", "rupee"],
+      ["Over ₹1 Crore", "xl", "rupee"],
+    ],
+  },
+  {
+    id: "security", q: "Can you offer security?",
+    options: [
+      ["No collateral", "none", "zap"],
+      ["Property", "property", "building"],
+      ["Gold, FD or securities", "gold", "gold"],
+      ["The asset being financed", "asset", "car"],
+    ],
+  },
+  {
+    id: "speed", q: "How soon do you need it?",
+    options: [
+      ["Within 48 hours", "now", "zap"],
+      ["This week", "week", "clock"],
+      ["This month", "month", "calendar"],
+      ["Just exploring", "explore", "compass"],
+    ],
+  },
+];
+
+/* Product profiles. A product scores a point for each dimension it matches;
+   `speed` is a tie-breaker rather than a filter. */
+const matcherProfiles = {
+  "personal-loan":                   { purpose: ["personal"], amount: ["s", "m"], security: ["none"], speed: ["now", "week"] },
+  "business-loan":                   { purpose: ["business"], amount: ["s", "m", "l"], security: ["none", "property"], speed: ["week", "month"] },
+  "home-loan":                       { purpose: ["property"], amount: ["l", "xl"], security: ["property"], speed: ["month", "explore"] },
+  "plot-loan":                       { purpose: ["property"], amount: ["m", "l"], security: ["property"], speed: ["month", "explore"] },
+  "new-car-loan":                    { purpose: ["vehicle"], amount: ["s", "m"], security: ["asset"], speed: ["week", "month"] },
+  "used-car-loan":                   { purpose: ["vehicle"], amount: ["s"], security: ["asset"], speed: ["now", "week"] },
+  "two-wheeler-loan":                { purpose: ["vehicle"], amount: ["s"], security: ["asset"], speed: ["now", "week"] },
+  "commercial-vehicle-loan":         { purpose: ["vehicle", "business"], amount: ["m", "l"], security: ["asset"], speed: ["week", "month"] },
+  "heavy-commercial-vehicle-loan":   { purpose: ["vehicle", "business"], amount: ["l", "xl"], security: ["asset"], speed: ["month"] },
+  "project-loan":                    { purpose: ["business"], amount: ["l", "xl"], security: ["property", "asset"], speed: ["month", "explore"] },
+  "overdraft-loan":                  { purpose: ["business", "asset"], amount: ["m", "l"], security: ["property", "gold"], speed: ["now", "week"] },
+  "gold-loan":                       { purpose: ["personal", "asset"], amount: ["s", "m"], security: ["gold"], speed: ["now"] },
+};
+
 module.exports = { site, loans, insurance, steps, testimonials, posts, partnerBenefits,
   goals, journeyNodes, lenders, lenderFilters, loanUniverse, insuranceMajor, insuranceMinor,
   whyPillars, investTabs, cardTypes, incomeBands, cardRewards, heroChips, distributorPoints,
   appPoints, footerCols, loanCatalogue, insuranceCatalogue, insuranceTrust,
   lenderProfiles, LENDER_KIND, BANK_HIGHLIGHTS, NBFC_HIGHLIGHTS, GOLD_HIGHLIGHTS,
-  businessFinance };
+  businessFinance, matcherQuestions, matcherProfiles };

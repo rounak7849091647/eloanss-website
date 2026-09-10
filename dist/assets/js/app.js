@@ -372,5 +372,199 @@ $$("[data-exit-close]", exit).forEach(function (b) { b.addEventListener("click",
 exit.addEventListener("click", function (e) { if (e.target === exit) closeExit(); });
 document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !exit.hidden) closeExit(); });
 }
+/* ---- Loan Matcher --------------------------------------------------------
+Scores every product profile against the answers. Purpose, amount and
+security each count 2; speed counts 1 as a tie-breaker. */
+var MATCH_PROFILES = window.__ELOANSS_MATCH || null;
+$$("[data-matcher]").forEach(function (root) {
+var steps = $$(".mq", root);
+var bar = $("[data-mq-progress]", root);
+var result = $("[data-mq-result]", root);
+var cards = $("[data-mq-cards]", root);
+var back = $("[data-mq-back]", root);
+var answers = {};
+var i = 0;
+function show(n) {
+i = n;
+steps.forEach(function (s, k) { s.classList.toggle("is-active", k === n); });
+if (bar) bar.style.width = ((n + 1) / steps.length) * 100 + "%";
+if (back) back.hidden = n === 0;
+result.hidden = true;
+$(".matcher__steps", root).hidden = false;
+}
+function finish() {
+var profiles = MATCH_PROFILES || {};
+var scored = Object.keys(profiles).map(function (slug) {
+var p = profiles[slug], s = 0;
+if (p.purpose.indexOf(answers.purpose) > -1) s += 2;
+if (p.amount.indexOf(answers.amount) > -1) s += 2;
+if (p.security.indexOf(answers.security) > -1) s += 2;
+if (p.speed.indexOf(answers.speed) > -1) s += 1;
+return { slug: slug, score: s, meta: p };
+}).sort(function (a, b) { return b.score - a.score; });
+var top = scored.slice(0, 3).filter(function (x) { return x.score > 0; });
+if (!top.length) top = scored.slice(0, 3);
+cards.innerHTML = top.map(function (x, k) {
+var m = (window.__ELOANSS_LOANS || {})[x.slug] || {};
+return '<a class="mcard" href="/loans/' + x.slug + '.html">' +
+'<span class="mcard__rank">' + (k + 1) + "</span>" +
+"<div><b>" + (m.name || x.slug) + "</b>" +
+'<span class="mcard__meta">' + (m.rate || "") + (m.amount ? " · " + m.amount : "") + "</span></div>" +
+'<span class="mcard__go">View</span></a>';
+}).join("");
+$(".matcher__steps", root).hidden = true;
+if (bar) bar.style.width = "100%";
+if (back) back.hidden = true;
+result.hidden = false;
+result.focus && result.focus();
+}
+$$(".mopt", root).forEach(function (btn) {
+btn.addEventListener("click", function () {
+answers[btn.getAttribute("data-mq-key")] = btn.getAttribute("data-mq-val");
+$$(".mopt", steps[i]).forEach(function (b) { b.classList.toggle("is-on", b === btn); });
+setTimeout(function () { i < steps.length - 1 ? show(i + 1) : finish(); }, 160);
+});
+});
+if (back) back.addEventListener("click", function () { if (i > 0) show(i - 1); });
+var again = $("[data-mq-restart]", root);
+if (again) again.addEventListener("click", function () { answers = {}; $$(".mopt", root).forEach(function (b) { b.classList.remove("is-on"); }); show(0); });
+});
+(function () {
+var tray = $("[data-cmptray]");
+if (!tray) return;
+var modal = $("[data-cmpmodal]");
+var chips = $("[data-cmp-chips]");
+var count = $("[data-cmp-count]");
+var MAX = 3;
+var picked = [];
+function itemOf(slug) { return $('[data-cmp-item="' + slug + '"]'); }
+function render() {
+count.textContent = picked.length;
+chips.innerHTML = picked.map(function (s) {
+var el = itemOf(s);
+return '<span class="cmpchip">' + el.getAttribute("data-cmp-name") +
+'<button type="button" data-cmp-drop="' + s + '" aria-label="Remove">&times;</button></span>';
+}).join("");
+tray.hidden = picked.length === 0;
+tray.classList.toggle("is-in", picked.length > 0);
+$$("[data-cmp-toggle]").forEach(function (cb) {
+var slug = cb.closest("[data-cmp-item]").getAttribute("data-cmp-item");
+cb.disabled = picked.length >= MAX && picked.indexOf(slug) === -1;
+});
+$$("[data-cmp-drop]", chips).forEach(function (b) {
+b.addEventListener("click", function () { toggle(b.getAttribute("data-cmp-drop"), false); });
+});
+}
+function toggle(slug, on) {
+var k = picked.indexOf(slug);
+if (on && k === -1) { if (picked.length >= MAX) return; picked.push(slug); }
+if (!on && k > -1) picked.splice(k, 1);
+var cb = $("[data-cmp-toggle]", itemOf(slug));
+if (cb) cb.checked = on;
+render();
+}
+$$("[data-cmp-toggle]").forEach(function (cb) {
+cb.addEventListener("change", function () {
+toggle(cb.closest("[data-cmp-item]").getAttribute("data-cmp-item"), cb.checked);
+});
+});
+var clear = $("[data-cmp-clear]");
+if (clear) clear.addEventListener("click", function () { picked.slice().forEach(function (s) { toggle(s, false); }); });
+var open = $("[data-cmp-open]");
+if (open) open.addEventListener("click", function () {
+var rows = [["", "Interest rate", "Loan amount", "Tenure"]];
+var head = '<tr><th scope="col">Product</th>' + picked.map(function (s) {
+return "<th scope=\"col\">" + itemOf(s).getAttribute("data-cmp-name") + "</th>";
+}).join("") + "</tr>";
+var body = [["Interest rate", "rate"], ["Loan amount", "amount"], ["Tenure", "tenure"]].map(function (r) {
+return "<tr><th scope=\"row\">" + r[0] + "</th>" + picked.map(function (s) {
+return "<td>" + itemOf(s).getAttribute("data-cmp-" + r[1]) + "</td>";
+}).join("") + "</tr>";
+}).join("");
+var links = "<tr><th scope=\"row\"></th>" + picked.map(function (s) {
+return '<td><a class="btn btn--blue btn--sm" href="/loans/' + s + '.html">Details</a></td>';
+}).join("") + "</tr>";
+$("[data-cmp-table]").innerHTML = "<table class=\"cmptable\"><thead>" + head + "</thead><tbody>" + body + links + "</tbody></table>";
+modal.hidden = false;
+requestAnimationFrame(function () { modal.classList.add("is-in"); });
+});
+function shut() { modal.classList.remove("is-in"); setTimeout(function () { modal.hidden = true; }, 240); }
+$$("[data-cmp-close]").forEach(function (b) { b.addEventListener("click", shut); });
+if (modal) modal.addEventListener("click", function (e) { if (e.target === modal) shut(); });
+document.addEventListener("keydown", function (e) { if (e.key === "Escape" && modal && !modal.hidden) shut(); });
+render();
+})();
+$$("[data-trackform]").forEach(function (form) {
+form.addEventListener("submit", function (e) {
+e.preventDefault();
+var ref = form.querySelector("input").value.trim().toUpperCase();
+var panel = $("[data-trk]");
+var empty = $("[data-trk-empty]");
+if (!/^ELN-\d{4}-\d{4,6}$/.test(ref)) {
+form.querySelector("input").setCustomValidity("Use the format ELN-YYYY-NNNNNN");
+form.querySelector("input").reportValidity();
+return;
+}
+form.querySelector("input").setCustomValidity("");
+/* deterministic sample stage from the reference, so the same input always
+shows the same thing rather than a different answer each time */
+var n = ref.split("-")[2].split("").reduce(function (a, c) { return a + +c; }, 0);
+var stage = n % 5;
+$("[data-trk-ref]").textContent = ref;
+var labels = ["Received", "Under review", "With lender", "Sanctioned", "Disbursed"];
+$("[data-trk-status]").textContent = labels[stage];
+$$("[data-trk-step]").forEach(function (s, k) {
+s.classList.toggle("is-done", k < stage);
+s.classList.toggle("is-now", k === stage);
+});
+panel.hidden = false;
+if (empty) empty.hidden = true;
+panel.scrollIntoView({ behavior: "smooth", block: "center" });
+});
+});
+/* ---- Trust ticker --------------------------------------------------------
+Rotates published aggregate figures. Deliberately not individual
+"someone just got approved" claims. */
+(function () {
+var t = $("[data-ticker]");
+if (!t) return;
+var line = $("[data-ticker-text]", t);
+var msgs = window.__ELOANSS_TRUST || [];
+if (!msgs.length) return;
+var k = 0, dismissed = false;
+$("[data-ticker-close]", t).addEventListener("click", function () {
+dismissed = true; t.classList.remove("is-in"); setTimeout(function () { t.hidden = true; }, 260);
+});
+function cycle() {
+if (dismissed) return;
+line.textContent = msgs[k % msgs.length];
+k++;
+t.hidden = false;
+requestAnimationFrame(function () { t.classList.add("is-in"); });
+setTimeout(function () {
+if (dismissed) return;
+t.classList.remove("is-in");
+setTimeout(cycle, 700);
+}, 5200);
+}
+setTimeout(cycle, 4200);
+})();
+/* ---- Skeletons -----------------------------------------------------------
+Applied where there is genuine latency: remote images and the map iframe.
+Not applied to the EMI calculator, which is instant local arithmetic. */
+$$("img[loading='lazy']").forEach(function (img) {
+if (img.complete && img.naturalWidth > 0) return;
+img.classList.add("is-loading");
+var done = function () { img.classList.remove("is-loading"); };
+img.addEventListener("load", done);
+img.addEventListener("error", done);
+});
+$$("iframe.map").forEach(function (f) {
+var w = document.createElement("div");
+w.className = "mapwrap is-loading";
+f.parentNode.insertBefore(w, f);
+w.appendChild(f);
+f.addEventListener("load", function () { w.classList.remove("is-loading"); });
+});
 $$("[data-year]").forEach((el) => el.textContent = new Date().getFullYear());
 })();
