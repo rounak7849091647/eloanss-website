@@ -2330,3 +2330,31 @@ img.is-loading, .mapwrap.is-loading {
 .mapwrap { position: relative; border-radius: var(--r-lg); overflow: hidden; }
 .mapwrap.is-loading iframe { opacity: 0; }
 .mapwrap iframe { transition: opacity .3s; }
+
+/* ==========================================================================
+   FIX: outline buttons were invisible on the dark and navy themes.
+
+   .btn--ghost used `--_fg: var(--navy)`. On the navy theme --navy IS the
+   surface colour, so the label rendered at 1:1 against its own background —
+   literally invisible. On the dark theme it measured 1.99:1.
+
+   This hit every outline button: the cookie bar's "Reject optional", the
+   compare tray's "Clear", the exit modal's "No thanks", the multi-step form's
+   "Back" and the matcher's "Start again". Because the reject control could not
+   be seen and there was no close affordance, the cookie notice could not be
+   dismissed at all, so it reappeared on every page.
+
+   --head already flips per theme (emerald in light, near-white in dark and
+   navy), so pointing the foreground at it fixes all three themes at once.
+   ========================================================================== */
+.btn--ghost { --_fg: var(--head); border-color: var(--line); }
+.btn--ghost:hover { border-color: var(--accent-ink); background: var(--navy-050); }
+
+/* cookie bar close control */
+.cookiebar__in { position: relative; padding-right: 52px; }
+.cookiebar__x { position: absolute; top: 10px; right: 14px; width: 34px; height: 34px;
+  border-radius: 50%; border: 1px solid var(--line); background: var(--surface);
+  color: var(--body); display: grid; place-items: center; cursor: pointer; transition: .18s; }
+.cookiebar__x:hover { border-color: var(--accent-ink); color: var(--accent-ink); }
+.cookiebar__x svg { width: 16px; height: 16px; }
+@media (max-width: 900px) { .cookiebar__x { top: 8px; right: 10px; } }

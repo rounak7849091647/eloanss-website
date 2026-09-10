@@ -316,6 +316,10 @@
     if (stored !== "accepted" && stored !== "rejected") {
       setTimeout(function () { bar.hidden = false; bar.classList.add("is-in"); }, 900);
     }
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && !bar.hidden) { try { localStorage.setItem(CK, "rejected"); } catch (e2) {}
+        bar.classList.remove("is-in"); setTimeout(function () { bar.hidden = true; }, 260); }
+    });
     $$("[data-cookie]", bar).forEach(function (b) {
       b.addEventListener("click", function () {
         try { localStorage.setItem(CK, b.getAttribute("data-cookie") === "accept" ? "accepted" : "rejected"); } catch (e) {}

@@ -344,6 +344,7 @@ const cookieBanner = () => `<div class="cookiebar" role="dialog" aria-modal="fal
       <button class="btn btn--ghost btn--sm" data-cookie="reject">Reject optional</button>
       <button class="btn btn--blue btn--sm" data-cookie="accept">Accept all</button>
     </div>
+    <button class="cookiebar__x" data-cookie="reject" aria-label="Close and reject optional cookies" title="Close — optional cookies stay off">${icons.close}</button>
   </div>
 </div>`;
 
