@@ -46,6 +46,8 @@
     ? new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } }), { threshold: 0.12 })
     : null;
   $$(".reveal").forEach((el) => io ? io.observe(el) : el.classList.add("in"));
+  /* signals the head-script failsafe that reveal is live */
+  window.__ELOANSS_READY = true;
 
   /* ---- EMI Calculator ---- */
   $$("[data-emi]").forEach((root) => {

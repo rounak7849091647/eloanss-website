@@ -43,7 +43,11 @@ function head({ title, description, path }) {
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/brand/favicon-32.png">
 <link rel="icon" type="image/png" sizes="180x180" href="/assets/img/brand/favicon-180.png">
 <link rel="apple-touch-icon" href="/assets/img/brand/favicon-180.png">
-<script>(function(){try{var t=localStorage.getItem("eloanss-theme");if(t==="dark"||t==="light"||t==="navy")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
+<script>(function(){var d=document.documentElement;try{var t=localStorage.getItem("eloanss-theme");if(t==="dark"||t==="light"||t==="navy")d.setAttribute("data-theme",t);}catch(e){}
+/* Reveal-on-scroll hides content until script runs. Gate that on .js so the page
+   is fully readable when script is unavailable, and drop the animation entirely
+   if app.js has not initialised within 3s (blocked, failed or errored). */
+d.className+=" js";setTimeout(function(){if(!window.__ELOANSS_READY)d.className+=" no-anim";},3000);})();</script>
 <link rel="stylesheet" href="/assets/css/styles.css?v=${CSS_V}">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FinancialService","name":"${site.name}","description":"${site.tagline}","url":"https://${site.domain}","telephone":"${site.phone}","email":"${site.email}","address":{"@type":"PostalAddress","streetAddress":"#8-3-903/F/7&10, Ratna Complex, Flat No: 404, Opp. R.S. Brothers, Y R Guda, Ameerpet","addressLocality":"Hyderabad","addressRegion":"Telangana","postalCode":"500038","addressCountry":"IN"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"${site.rating}","reviewCount":"12400"}}
