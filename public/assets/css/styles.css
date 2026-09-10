@@ -2106,3 +2106,88 @@ input[type="range"]::-webkit-slider-thumb { margin-top: 0; }
   .propgrid { grid-template-columns: 1fr 1fr; }
   .whygrid { grid-template-columns: 1fr; }
 }
+
+/* ==========================================================================
+   ACCESSIBILITY, COMPLIANCE & CRO COMPONENTS
+   ========================================================================== */
+
+/* skip link — visible only when focused */
+.skiplink { position: absolute; left: 12px; top: -60px; z-index: 300; padding: 10px 18px;
+  background: var(--navy); color: #fff; border-radius: 0 0 10px 10px; font-family: var(--font-head);
+  font-weight: 600; font-size: .9rem; transition: top .18s; }
+.skiplink:focus { top: 0; }
+
+/* one consistent, visible focus ring everywhere */
+a:focus-visible, button:focus-visible, input:focus-visible,
+select:focus-visible, textarea:focus-visible, [tabindex]:focus-visible {
+  outline: 3px solid var(--accent-ink); outline-offset: 2px; border-radius: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}
+
+/* consent checkbox */
+.consent { display: flex; gap: 10px; align-items: flex-start; margin: 14px 0; cursor: pointer; }
+.consent input { margin-top: 3px; width: 18px; height: 18px; flex: none; accent-color: var(--blue); }
+.consent span { font-size: .8rem; color: var(--body); line-height: 1.5; }
+.consent a { color: var(--accent-ink); font-weight: 600; text-decoration: underline; }
+
+/* security badges */
+.secbadges { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 14px; }
+.secbadges li { display: inline-flex; align-items: center; gap: 6px; font-size: .72rem;
+  font-weight: 600; color: var(--muted); }
+.secbadges svg { width: 14px; height: 14px; color: var(--success); flex: none; }
+
+/* cookie bar */
+.cookiebar { position: fixed; left: 0; right: 0; bottom: 0; z-index: 200; background: var(--surface);
+  border-top: 1px solid var(--line); box-shadow: 0 -8px 30px rgba(0,0,0,.16);
+  transform: translateY(110%); transition: transform .3s ease; }
+.cookiebar.is-in { transform: none; }
+.cookiebar__in { max-width: var(--container); margin: 0 auto; padding: 16px 22px;
+  display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+.cookiebar b { display: block; font-family: var(--font-head); font-size: .95rem; color: var(--ink); margin-bottom: 3px; }
+.cookiebar p { font-size: .82rem; color: var(--body); margin: 0; max-width: 780px; line-height: 1.55; }
+.cookiebar a { color: var(--accent-ink); font-weight: 600; text-decoration: underline; }
+.cookiebar__acts { display: flex; gap: 10px; margin-left: auto; flex-wrap: wrap; }
+@media (max-width: 900px) { .cookiebar { bottom: 64px; } .cookiebar__acts { width: 100%; } .cookiebar__acts .btn { flex: 1; } }
+
+/* button ripple */
+.btn { position: relative; overflow: hidden; }
+.ripple { position: absolute; border-radius: 50%; background: rgba(255,255,255,.45);
+  transform: scale(0); animation: ripple .55s ease-out; pointer-events: none; }
+.btn--ghost .ripple, .btn--gold .ripple { background: rgba(0,0,0,.16); }
+@keyframes ripple { to { transform: scale(2.4); opacity: 0; } }
+
+/* EMI fee breakdown */
+.fees { margin-top: 16px; border-top: 1px solid rgba(255,255,255,.14); padding-top: 14px; }
+.fees__toggle { display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; padding: 0;
+  font-family: var(--font-head); font-weight: 600; font-size: .82rem; color: var(--gold); cursor: pointer; }
+.fees__toggle svg { width: 15px; height: 15px; transition: transform .2s; }
+.fees__toggle svg:last-child { transition: transform .2s; }
+.fees.is-open .fees__toggle svg:last-child { transform: rotate(180deg); }
+.fees__body, .fees__note { display: none; }
+.fees.is-open .fees__body, .fees.is-open .fees__note { display: block; }
+.fees__body { margin-top: 12px; display: grid; gap: 8px; }
+.fees__body .r { display: flex; justify-content: space-between; gap: 12px; font-size: .82rem; color: #cff0e7; }
+.fees__body b { color: #fff; font-family: var(--font-head); }
+.fees__note { margin: 12px 0 0; font-size: .72rem; color: #7fac9f; line-height: 1.55; }
+
+/* exit-intent modal */
+.exitmodal { position: fixed; inset: 0; z-index: 250; display: grid; place-items: center; padding: 20px;
+  background: rgba(4,18,30,.62); opacity: 0; transition: opacity .26s; }
+.exitmodal.is-in { opacity: 1; }
+.exitmodal__card { position: relative; max-width: 460px; width: 100%; background: var(--surface);
+  border-radius: var(--r-xl); padding: 34px 30px; text-align: center; box-shadow: var(--sh-lg);
+  transform: translateY(14px); transition: transform .26s; }
+.exitmodal.is-in .exitmodal__card { transform: none; }
+.exitmodal__x { position: absolute; top: 12px; right: 12px; width: 34px; height: 34px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--surface); color: var(--body); display: grid; place-items: center; }
+.exitmodal__x svg { width: 17px; height: 17px; }
+.exitmodal__ic { width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 16px; display: grid;
+  place-items: center; background: var(--blue-050); color: var(--accent-ink); }
+.exitmodal__ic svg { width: 28px; height: 28px; }
+.exitmodal h3 { font-size: 1.28rem; margin-bottom: 10px; }
+.exitmodal p { font-size: .92rem; color: var(--body); margin-bottom: 20px; }
+.exitmodal__acts { display: grid; gap: 10px; margin-bottom: 14px; }
+.exitmodal small { font-size: .72rem; color: var(--muted); }

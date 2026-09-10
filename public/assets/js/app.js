@@ -304,6 +304,121 @@
     mq.addEventListener ? mq.addEventListener("change", onChange) : mq.addListener(onChange);
   }
 
+/* ---- Cookie consent (DPDP) ----------------------------------------------
+     The site sets no analytics or advertising cookies today, so this records
+     the visitor's choice rather than gating anything that currently exists.
+     Accept and Reject are given equal prominence; no option is pre-selected. */
+  var CK = "eloanss-cookie-consent";
+  var bar = $("[data-cookiebar]");
+  if (bar) {
+    var stored = null;
+    try { stored = localStorage.getItem(CK); } catch (e) {}
+    if (stored !== "accepted" && stored !== "rejected") {
+      setTimeout(function () { bar.hidden = false; bar.classList.add("is-in"); }, 900);
+    }
+    $$("[data-cookie]", bar).forEach(function (b) {
+      b.addEventListener("click", function () {
+        try { localStorage.setItem(CK, b.getAttribute("data-cookie") === "accept" ? "accepted" : "rejected"); } catch (e) {}
+        bar.classList.remove("is-in");
+        setTimeout(function () { bar.hidden = true; }, 260);
+      });
+    });
+  }
+
+  /* ---- Keyboard support for the desktop mega-menus -------------------------
+     They opened on hover and on click, which left them unreachable by keyboard
+     and impossible to dismiss without a mouse. */
+  $$(".pnav__item--has-menu").forEach(function (item) {
+    var link = $(".pnav__link", item);
+    var open = function () { item.classList.add("is-open"); if (link) link.setAttribute("aria-expanded", "true"); };
+    var shut = function () { item.classList.remove("is-open"); if (link) link.setAttribute("aria-expanded", "false"); };
+    if (link) {
+      link.setAttribute("aria-expanded", "false");
+      link.setAttribute("aria-haspopup", "true");
+      link.addEventListener("keydown", function (e) {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); item.classList.contains("is-open") ? shut() : open(); }
+      });
+    }
+    item.addEventListener("focusin", open);
+    item.addEventListener("focusout", function (e) { if (!item.contains(e.relatedTarget)) shut(); });
+    item.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") { shut(); if (link) link.focus(); }
+    });
+  });
+
+  /* close the mobile drawer on Escape too */
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    var m = $(".mnav");
+    if (m && m.classList.contains("is-open")) { m.classList.remove("is-open"); document.body.style.overflow = ""; }
+  });
+
+  /* ---- Button ripple ------------------------------------------------------- */
+  document.addEventListener("pointerdown", function (e) {
+    var b = e.target.closest(".btn");
+    if (!b || b.classList.contains("no-ripple")) return;
+    var r = b.getBoundingClientRect();
+    var s = document.createElement("span");
+    s.className = "ripple";
+    var size = Math.max(r.width, r.height);
+    s.style.width = s.style.height = size + "px";
+    s.style.left = (e.clientX - r.left - size / 2) + "px";
+    s.style.top = (e.clientY - r.top - size / 2) + "px";
+    b.appendChild(s);
+    setTimeout(function () { s.remove(); }, 600);
+  });
+
+  /* ---- EMI fee breakdown ---------------------------------------------------
+     Indicative only, and labelled as such: processing fee and GST are the
+     lender's, not ours, and foreclosure terms vary by lender. */
+  $$("[data-fees]").forEach(function (box) {
+    var root = box.closest("[data-emi]") || document;
+    var amt = $("[data-emi-amount]", root);
+    var out = $("[data-fee-list]", box);
+    if (!amt || !out) return;
+    var render = function () {
+      var P = +amt.value;
+      var pf = Math.round(P * 0.01);          // 1% typical processing fee
+      var gst = Math.round(pf * 0.18);        // 18% GST on the fee
+      out.innerHTML =
+        '<div class="r"><span>Processing fee (approx. 1%)</span><b>' + inr(pf) + "</b></div>" +
+        '<div class="r"><span>GST on fee (18%)</span><b>' + inr(gst) + "</b></div>" +
+        '<div class="r"><span>Upfront cost (approx.)</span><b>' + inr(pf + gst) + "</b></div>" +
+        '<div class="r"><span>Foreclosure charge</span><b>Varies by lender</b></div>';
+    };
+    amt.addEventListener("input", render);
+    render();
+    var t = $("[data-fee-toggle]", box);
+    if (t) t.addEventListener("click", function () {
+      var open = box.classList.toggle("is-open");
+      t.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+  });
+
+  /* ---- Exit intent --------------------------------------------------------
+     Fires once per visitor, on genuine exit intent only, and never on touch
+     devices where the pointer never leaves the viewport. */
+  var EX = "eloanss-exit-shown";
+  var exit = $("[data-exitmodal]");
+  if (exit && !window.matchMedia("(pointer: coarse)").matches) {
+    var seen = false;
+    try { seen = localStorage.getItem(EX) === "1"; } catch (e) {}
+    var showExit = function (e) {
+      if (seen || e.clientY > 0) return;
+      seen = true;
+      try { localStorage.setItem(EX, "1"); } catch (e2) {}
+      exit.hidden = false;
+      requestAnimationFrame(function () { exit.classList.add("is-in"); });
+      var f = exit.querySelector("button, a, input");
+      if (f) f.focus();
+    };
+    document.addEventListener("mouseout", function (e) { if (!e.relatedTarget) showExit(e); });
+    var closeExit = function () { exit.classList.remove("is-in"); setTimeout(function () { exit.hidden = true; }, 260); };
+    $$("[data-exit-close]", exit).forEach(function (b) { b.addEventListener("click", closeExit); });
+    exit.addEventListener("click", function (e) { if (e.target === exit) closeExit(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !exit.hidden) closeExit(); });
+  }
+
   /* ---- Footer year ---- */
   $$("[data-year]").forEach((el) => el.textContent = new Date().getFullYear());
 })();

@@ -48,7 +48,8 @@ function head({ title, description, path }) {
 {"@context":"https://schema.org","@type":"FinancialService","name":"${site.name}","description":"${site.tagline}","url":"https://${site.domain}","telephone":"${site.phone}","email":"${site.email}","address":{"@type":"PostalAddress","streetAddress":"#8-3-903/F/7&10, Ratna Complex, Flat No: 404, Opp. R.S. Brothers, Y R Guda, Ameerpet","addressLocality":"Hyderabad","addressRegion":"Telangana","postalCode":"500038","addressCountry":"IN"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"${site.rating}","reviewCount":"12400"}}
 </script>
 </head>
-<body>`;
+<body>
+<a class="skiplink" href="#main">Skip to main content</a>`;
 }
 
 /* ---- Brand --------------------------------------------------------------- */
@@ -278,10 +279,60 @@ function footer() {
   </div>
 </footer>
 ${floatingActions()}
+${cookieBanner()}
+${exitModal()}
 <script src="/assets/js/app.js?v=${JS_V}" defer></script>
 </body>
 </html>`;
 }
+
+/* ---- Compliance & trust ---------------------------------------------------
+   consentCheck()  — the DPDP-style consent a lead form needs. Never pre-ticked
+                     and always `required`, so consent is an affirmative act.
+   securityBadges()— shown beside submit buttons.
+   cookieBanner()  — DPDP notice. The site sets no analytics or advertising
+                     cookies today, so this asks about them honestly rather
+                     than claiming a consent it does not need; the choice is
+                     stored and the banner exposes Accept and Reject with
+                     equal weight (no dark pattern).
+   ------------------------------------------------------------------------- */
+const consentCheck = (id) => `<label class="consent" for="${id}">
+    <input type="checkbox" id="${id}" name="consent" required>
+    <span>I agree to the <a href="/privacy.html">Privacy Policy</a> and consent to being contacted regarding financial products.</span>
+  </label>`;
+
+const securityBadges = () => `<ul class="secbadges" aria-label="Security and compliance">
+    <li>${icons.lock}<span>256-bit SSL Encrypted</span></li>
+    <li>${icons.bank}<span>RBI Regulated Partners</span></li>
+    <li>${icons.shield}<span>Data Never Sold</span></li>
+  </ul>`;
+
+const exitModal = () => `<div class="exitmodal" data-exitmodal role="dialog" aria-modal="true" aria-labelledby="exm" hidden>
+  <div class="exitmodal__card">
+    <button class="exitmodal__x" data-exit-close aria-label="Close">${icons.close}</button>
+    <span class="exitmodal__ic">${icons.gauge}</span>
+    <h3 id="exm">Before you go — check your credit score free</h3>
+    <p>It takes a minute, it is a soft enquiry, and it will not affect your score. Knowing it first is the difference between a good rate and a rejection.</p>
+    <div class="exitmodal__acts">
+      <a class="btn btn--blue" href="/credit-score.html">Check My Score Free ${icons.arrowRight}</a>
+      <button class="btn btn--ghost" data-exit-close>No thanks</button>
+    </div>
+    <small>Free forever · No impact on your credit score · No obligation</small>
+  </div>
+</div>`;
+
+const cookieBanner = () => `<div class="cookiebar" role="dialog" aria-modal="false" aria-labelledby="ckt" data-cookiebar hidden>
+  <div class="cookiebar__in">
+    <div>
+      <b id="ckt">Your privacy</b>
+      <p>We use essential cookies to make this site work. We would also like to set optional analytics cookies to understand how the site is used. Under India's DPDP Act you can decline, and nothing on this site depends on them. See our <a href="/privacy.html">Privacy Policy</a>.</p>
+    </div>
+    <div class="cookiebar__acts">
+      <button class="btn btn--ghost btn--sm" data-cookie="reject">Reject optional</button>
+      <button class="btn btn--blue btn--sm" data-cookie="accept">Accept all</button>
+    </div>
+  </div>
+</div>`;
 
 /* ---- Reusable sections --------------------------------------------------- */
 
@@ -322,6 +373,11 @@ function emiCalculator(cfg, { compact = false } = {}) {
         <div class="r"><span>Total Payable</span><b data-out-total></b></div>
       </div>
       ${compact ? "" : `<a class="btn btn--gold btn--block mt" href="/contact.html">Get My Best Offer ${icons.arrowRight}</a>`}
+      <div class="fees" data-fees>
+        <button class="fees__toggle" type="button" data-fee-toggle aria-expanded="false">${icons.info} What else will I pay? ${icons.chevronDown}</button>
+        <div class="fees__body" data-fee-list></div>
+        <p class="fees__note">Indicative. Processing fee and GST are charged by the lender, not by ${site.name}, and foreclosure terms differ between lenders.</p>
+      </div>
       <p class="emi__note">Indicative estimate. Final EMI depends on the lender's approved rate and terms.</p>
     </div>
   </div>`;
@@ -333,7 +389,15 @@ function faqSection(faqs, title = "Frequently Asked Questions") {
     <button class="faq__q">${q}<span class="pm">${'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'}</span></button>
     <div class="faq__a"><p>${a}</p></div>
   </div>`).join("");
-  return `<section class="section section--soft"><div class="container">
+  const ld = JSON.stringify({
+    "@context": "https://schema.org", "@type": "FAQPage",
+    mainEntity: faqs.map(([q, a]) => ({
+      "@type": "Question", name: q,
+      acceptedAnswer: { "@type": "Answer", text: String(a).replace(/<[^>]+>/g, "") },
+    })),
+  });
+  return `<script type="application/ld+json">${ld}</script>
+  <section class="section section--soft"><div class="container">
     <div class="section-head reveal"><span class="eyebrow">FAQs</span><h2>${title}</h2><p>Everything you need to know. Still have questions? Our experts are a call away.</p></div>
     <div class="faq reveal">${items}</div>
   </div></section>`;
@@ -379,6 +443,7 @@ function applicationForm(productName = "") {
       <button type="button" class="btn btn--navy" data-next>Continue ${icons.arrowRight}</button>
       <button type="submit" class="btn btn--gold" style="display:none">Submit Application</button>
     </div>
+    ${securityBadges()}
     <div class="form-ok" hidden>
       <span class="ic">${icons.checkCircle}</span>
       <h4>Thank you! Your enquiry is submitted.</h4>
@@ -396,4 +461,5 @@ function applicationForm(productName = "") {
   </script>`;
 }
 
-module.exports = { head, header, footer, brand, floatingActions, complianceNote, emiCalculator, faqSection, applicationForm, waLink };
+module.exports = { head, header, footer, brand, floatingActions, complianceNote, emiCalculator, faqSection, applicationForm, waLink,
+  consentCheck, securityBadges, cookieBanner, exitModal };

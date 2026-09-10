@@ -6,7 +6,8 @@ const { site, loans, insurance, steps, testimonials, posts, partnerBenefits,
   appPoints, businessFinance, lenderProfiles, LENDER_KIND, BANK_HIGHLIGHTS, NBFC_HIGHLIGHTS, GOLD_HIGHLIGHTS } = require("./data");
 const C = require("./components");
 
-const layout = (meta, active, body) => C.head(meta) + C.header(active) + body + C.footer();
+const layout = (meta, active, body) =>
+  C.head(meta) + C.header(active) + `<main id="main">` + body + `</main>` + C.footer();
 
 const findLoan = (slug) => loans.find((l) => l.slug === slug);
 const findIns = (slug) => insurance.find((i) => i.slug === slug);
@@ -177,7 +178,9 @@ function home() {
       <div class="score__body">
         <form class="score__form" data-simpleform>
           <input class="input" type="tel" name="mobile" required placeholder="Enter your mobile number" aria-label="Mobile number">
+          ${C.consentCheck("cs-" + Math.random().toString(36).slice(2, 8))}
           <button class="btn btn--blue btn--block" type="submit">Get My Free Score ${icons.arrowRight}</button>
+          ${C.securityBadges()}
           <span class="form-ok form-ok--inline" hidden>${icons.checkCircle} We'll text your score shortly.</span>
         </form>
         <div class="gauge">
@@ -390,6 +393,7 @@ function home() {
           <div class="field"><label>Card Type</label><select class="select" name="cardType"><option value="">Select Card Type</option>${cardTypes.map((c) => `<option>${c}</option>`).join("")}</select></div>
           <div class="field"><label>Annual Income</label><select class="select" name="income"><option value="">Select Income Range</option>${incomeBands.map((c) => `<option>${c}</option>`).join("")}</select></div>
           <div class="field"><label>Preferred Bank</label><select class="select" name="bank"><option value="">Select Bank</option>${lenders.slice(0, 12).map(([n]) => `<option>${n}</option>`).join("")}</select></div>
+          ${C.consentCheck("cc-" + Math.random().toString(36).slice(2, 8))}
           <button class="btn btn--blue" type="submit">Compare Now ${icons.arrowRight}</button>
           <span class="form-ok form-ok--inline" hidden>${icons.checkCircle} Matching cards — an advisor will call you.</span>
         </form>
@@ -539,6 +543,23 @@ ${ctaBand("Not sure which loan is right for you?", "Talk to an ELOANSS expert. W
 
 /* =============================================================== LOAN PAGE */
 function loanPage(l) {
+  /* FinancialProduct rich-result data. Rates are ranges, and interestRate is
+     omitted deliberately: schema.org expects a single number and ELOANSS
+     cannot quote one, since the lender sets it. */
+  const productLd = JSON.stringify({
+    "@context": "https://schema.org", "@type": "FinancialProduct",
+    name: l.name, description: l.tagline,
+    url: "https://" + site.domain + "/loans/" + l.slug + ".html",
+    provider: { "@type": "FinancialService", name: site.name, url: "https://" + site.domain },
+    areaServed: { "@type": "Country", name: "India" },
+    feesAndCommissionsSpecification:
+      "Free for customers. ELOANSS is a facilitator and is paid a commission by the lender.",
+    additionalProperty: [
+      { "@type": "PropertyValue", name: "Indicative interest rate", value: l.rate + " p.a." },
+      { "@type": "PropertyValue", name: "Loan amount", value: l.amount },
+      { "@type": "PropertyValue", name: "Tenure", value: l.tenure },
+    ],
+  });
   const benefits = l.benefits.map(([t, d], k) => `<div class="card reveal" data-d="${k % 3}"><span class="card__ic">${icons.checkCircle}</span><h3>${t}</h3><p class="mb0">${d}</p></div>`).join("");
   const elig = l.eligibility.map((e) => `<li>${icons.checkCircle ? '<span class="ic">' + icons.check + '</span>' : ''}<span><b>${e}</b></span></li>`).join("");
   const docs = l.documents.map((d) => `<li><span class="ic">${icons.fileText}</span>${d}</li>`).join("");
@@ -546,6 +567,7 @@ function loanPage(l) {
   const cross = (l.crossSell || []).map((s) => `<a class="card reveal" href="${catLink(s)}"><span class="card__ic">${catIcon(s)}</span><h3>${catName(s)}</h3><p class="mb0">Recommended alongside your ${l.name.replace(" / Mortgage Loan", "")}.</p><br><span class="card__link">Get a quote ${icons.arrowRight}</span></a>`).join("");
 
   const body = `
+<script type="application/ld+json">${productLd}</script>
 <section class="phero"><div class="container"><div class="phero__inner">
   <div>
     ${crumbs([["Home", "/index.html"], ["Loans", "/loans.html"], [l.name]])}
@@ -1145,7 +1167,8 @@ function creditCardsPage() {
         <div class="field"><label>Card Type</label><select class="select" name="cardType"><option value="">Select Card Type</option>${cardTypes.map((c) => `<option>${c}</option>`).join("")}</select></div>
         <div class="field"><label>Annual Income</label><select class="select" name="income"><option value="">Select Income Range</option>${incomeBands.map((c) => `<option>${c}</option>`).join("")}</select></div>
         <div class="field"><label>Preferred Bank</label><select class="select" name="bank"><option value="">Select Bank</option>${lenders.slice(0, 12).map(([n]) => `<option>${n}</option>`).join("")}</select></div>
-        <button class="btn btn--blue" type="submit">Compare Now ${icons.arrowRight}</button>
+        ${C.consentCheck("cc-" + Math.random().toString(36).slice(2, 8))}
+          <button class="btn btn--blue" type="submit">Compare Now ${icons.arrowRight}</button>
         <span class="form-ok form-ok--inline" hidden>${icons.checkCircle} Matching cards — an advisor will call you.</span>
       </form>
     </div>
@@ -1231,7 +1254,9 @@ function creditScorePage() {
       <div class="score__body">
         <form class="score__form" data-simpleform>
           <input class="input" type="tel" name="mobile" required placeholder="Enter your mobile number" aria-label="Mobile number">
+          ${C.consentCheck("cs-" + Math.random().toString(36).slice(2, 8))}
           <button class="btn btn--blue btn--block" type="submit">Get My Free Score ${icons.arrowRight}</button>
+          ${C.securityBadges()}
           <span class="form-ok form-ok--inline" hidden>${icons.checkCircle} We'll text your score shortly.</span>
         </form>
         <div class="gauge">
@@ -1339,7 +1364,9 @@ function calculatorsPage() {
           <select class="select" name="product" required><option value="">Select</option>${loans.map((l) => `<option>${l.name}</option>`).join("")}</select></div>
       </div>
       <div class="field"><label>Mobile number <span class="req">*</span></label><input class="input" type="tel" name="mobile" required placeholder="10-digit mobile"></div>
+      ${C.consentCheck("el-" + Math.random().toString(36).slice(2, 8))}
       <button class="btn btn--blue btn--block" type="submit">Check My Eligibility ${icons.arrowRight}</button>
+      ${C.securityBadges()}
       <div class="form-ok" hidden>
         <span class="ic">${icons.checkCircle}</span>
         <h4>Thanks — we have what we need.</h4>
