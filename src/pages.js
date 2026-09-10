@@ -1213,7 +1213,13 @@ function creditScorePage() {
   ];
 
   const body = `
-<section class="phero"><div class="container"><div class="phero__inner">
+<section class="phero phero--score">
+  <picture class="phero__bg">
+    <source type="image/webp" srcset="/assets/img/score-bg-760.webp 760w, /assets/img/score-bg-1200.webp 1200w, /assets/img/score-bg-2000.webp 2000w" sizes="100vw">
+    <img src="/assets/img/score-bg-1200.jpg" srcset="/assets/img/score-bg-760.jpg 760w, /assets/img/score-bg-1200.jpg 1200w, /assets/img/score-bg-2000.jpg 2000w" sizes="100vw" alt="" width="1966" height="800" fetchpriority="high" decoding="async">
+  </picture>
+  <span class="phero__scrim" aria-hidden="true"></span>
+  <div class="container"><div class="phero__inner">
   <div>
     ${crumbs([["Home", "/index.html"], ["Credit Score"]])}
     <h1>Check Your Credit Score — Free</h1>

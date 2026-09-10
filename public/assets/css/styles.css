@@ -2106,3 +2106,42 @@ input[type="range"]::-webkit-slider-thumb { margin-top: 0; }
   .propgrid { grid-template-columns: 1fr 1fr; }
   .whygrid { grid-template-columns: 1fr; }
 }
+
+/* ==========================================================================
+   CREDIT SCORE HERO BACKGROUND
+   Photographic cityscape behind the credit-score hero only. The picture sits
+   below the content (z-index -2) with a scrim above it (-1) so the white
+   heading, the stat blocks and the glass score card keep AA contrast over the
+   bright green sky and the warm glow on the right.
+   ========================================================================== */
+.phero--score { background: #062018; isolation: isolate; }
+.phero--score::after { display: none; }
+.phero__bg { position: absolute; inset: 0; z-index: -2; display: block; }
+.phero__bg img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; display: block; }
+.phero__scrim { position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(4,30,22,.90) 0%, rgba(4,30,22,.84) 32%, rgba(4,30,22,.74) 58%, rgba(4,30,22,.70) 100%),
+    linear-gradient(180deg, rgba(4,30,22,.30) 0%, transparent 30%, transparent 60%, rgba(4,30,22,.55) 100%); }
+
+/* the score card sits over the brightest part of the photo, so it carries a
+   little more of its own tint than the flat-gradient heroes need */
+.phero--score .phero__card { background: rgba(3,26,19,.34); border-color: rgba(255,255,255,.2); backdrop-filter: blur(10px); }
+.phero--score .phero__stat { background: rgba(3,26,19,.4); border-color: rgba(255,255,255,.2); }
+.phero--score h1, .phero--score .phero__inner > div > p { text-shadow: 0 2px 16px rgba(3,22,16,.6); }
+
+/* single column below 900px: the copy no longer sits only on the left, so the
+   scrim goes flat rather than directional */
+@media (max-width: 900px) {
+  .phero--score .phero__bg img { object-position: 66% 50%; }
+  .phero--score .phero__scrim { background:
+    linear-gradient(180deg, rgba(4,30,22,.86) 0%, rgba(4,30,22,.64) 34%, rgba(4,30,22,.70) 70%, rgba(4,30,22,.88) 100%); }
+}
+
+/* the photo is lit for the light theme; damp it down on the dark themes so it
+   does not glow out of an otherwise near-black page */
+:root[data-theme="dark"] .phero__bg img,
+:root[data-theme="navy"] .phero__bg img { filter: brightness(.76) contrast(1.04); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .phero__bg img { filter: brightness(.76) contrast(1.04); }
+}
+:root[data-theme="navy"] .phero--score { background: #061827; }
