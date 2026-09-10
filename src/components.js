@@ -1,7 +1,6 @@
 /* ELOANSS — shared HTML components */
 const { icons } = require("./icons");
-const { site, loans, insurance, loanCatalogue, insuranceCatalogue, footerCols,
-  matcherQuestions, matcherProfiles } = require("./data");
+const { site, loans, insurance, loanCatalogue, insuranceCatalogue, footerCols } = require("./data");
 
 const fsx = require("fs");
 const pathx = require("path");
@@ -43,18 +42,13 @@ function head({ title, description, path }) {
 <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/brand/favicon-32.png">
 <link rel="icon" type="image/png" sizes="180x180" href="/assets/img/brand/favicon-180.png">
 <link rel="apple-touch-icon" href="/assets/img/brand/favicon-180.png">
-<script>(function(){var d=document.documentElement;try{var t=localStorage.getItem("eloanss-theme");if(t==="dark"||t==="light"||t==="navy")d.setAttribute("data-theme",t);}catch(e){}
-/* Reveal-on-scroll hides content until script runs. Gate that on .js so the page
-   is fully readable when script is unavailable, and drop the animation entirely
-   if app.js has not initialised within 3s (blocked, failed or errored). */
-d.className+=" js";setTimeout(function(){if(!window.__ELOANSS_READY)d.className+=" no-anim";},3000);})();</script>
+<script>(function(){try{var t=localStorage.getItem("eloanss-theme");if(t==="dark"||t==="light"||t==="navy")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <link rel="stylesheet" href="/assets/css/styles.css?v=${CSS_V}">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"FinancialService","name":"${site.name}","description":"${site.tagline}","url":"https://${site.domain}","telephone":"${site.phone}","email":"${site.email}","address":{"@type":"PostalAddress","streetAddress":"#8-3-903/F/7&10, Ratna Complex, Flat No: 404, Opp. R.S. Brothers, Y R Guda, Ameerpet","addressLocality":"Hyderabad","addressRegion":"Telangana","postalCode":"500038","addressCountry":"IN"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"${site.rating}","reviewCount":"12400"}}
 </script>
 </head>
-<body>
-<a class="skiplink" href="#main">Skip to main content</a>`;
+<body>`;
 }
 
 /* ---- Brand --------------------------------------------------------------- */
@@ -115,7 +109,7 @@ function header(active = "") {
       </form>
       <div class="util__acts">
         <a class="util__link" href="/contact.html">${icons.headset}<span>Support</span></a>
-        <a class="util__link" href="/track-application.html">${icons.fileText}<span>Track Application</span></a>
+        <a class="util__link" href="/contact.html">${icons.fileText}<span>Track Application</span></a>
         <a class="btn btn--blue btn--sm" href="/contact.html">${icons.arrowRight} Apply Now</a>
         <button class="themebtn" data-theme-toggle aria-label="Switch between light and dark theme" title="Switch theme"><span class="themebtn__sun">${icons.sun}</span><span class="themebtn__moon">${icons.moon}</span><span class="themebtn__navy">${icons.navyTheme}</span></button>
         <button class="util__grid" aria-label="All products" data-jump="#universe">${icons.grid}</button>
@@ -284,147 +278,10 @@ function footer() {
   </div>
 </footer>
 ${floatingActions()}
-${cookieBanner()}
-${exitModal()}
-${trustTicker()}
-<script>
-window.__ELOANSS_MATCH=${JSON.stringify(matcherProfiles)};
-window.__ELOANSS_LOANS=${JSON.stringify(loans.reduce((a, l) => (a[l.slug] = { name: l.name.replace(" / Mortgage Loan", " / Mortgage"), rate: l.rate + " p.a.", amount: l.amount }, a), {}))};
-window.__ELOANSS_TRUST=${JSON.stringify([
-  site.partners + " lending partners compared on every application",
-  site.disbursed + " in loans facilitated to date",
-  site.reviews + " verified reviews · " + site.rating + "/5 average",
-  "Checking your options never puts a hard enquiry on your credit report",
-  "Free for customers — our commission is paid by the lender",
-])};
-</script>
 <script src="/assets/js/app.js?v=${JS_V}" defer></script>
 </body>
 </html>`;
 }
-
-/* ---- Compliance & trust ---------------------------------------------------
-   consentCheck()  — the DPDP-style consent a lead form needs. Never pre-ticked
-                     and always `required`, so consent is an affirmative act.
-   securityBadges()— shown beside submit buttons.
-   cookieBanner()  — DPDP notice. The site sets no analytics or advertising
-                     cookies today, so this asks about them honestly rather
-                     than claiming a consent it does not need; the choice is
-                     stored and the banner exposes Accept and Reject with
-                     equal weight (no dark pattern).
-   ------------------------------------------------------------------------- */
-const consentCheck = (id) => `<label class="consent" for="${id}">
-    <input type="checkbox" id="${id}" name="consent" required>
-    <span>I agree to the <a href="/privacy.html">Privacy Policy</a> and consent to being contacted regarding financial products.</span>
-  </label>`;
-
-const securityBadges = () => `<ul class="secbadges" aria-label="Security and compliance">
-    <li>${icons.lock}<span>256-bit SSL Encrypted</span></li>
-    <li>${icons.bank}<span>RBI Regulated Partners</span></li>
-    <li>${icons.shield}<span>Data Never Sold</span></li>
-  </ul>`;
-
-const exitModal = () => `<div class="exitmodal" data-exitmodal role="dialog" aria-modal="true" aria-labelledby="exm" hidden>
-  <div class="exitmodal__card">
-    <button class="exitmodal__x" data-exit-close aria-label="Close">${icons.close}</button>
-    <span class="exitmodal__ic">${icons.gauge}</span>
-    <h3 id="exm">Before you go — check your credit score free</h3>
-    <p>It takes a minute, it is a soft enquiry, and it will not affect your score. Knowing it first is the difference between a good rate and a rejection.</p>
-    <div class="exitmodal__acts">
-      <a class="btn btn--blue" href="/credit-score.html">Check My Score Free ${icons.arrowRight}</a>
-      <button class="btn btn--ghost" data-exit-close>No thanks</button>
-    </div>
-    <small>Free forever · No impact on your credit score · No obligation</small>
-  </div>
-</div>`;
-
-const cookieBanner = () => `<div class="cookiebar" role="dialog" aria-modal="false" aria-labelledby="ckt" data-cookiebar hidden>
-  <div class="cookiebar__in">
-    <div>
-      <b id="ckt">Your privacy</b>
-      <p>We use essential cookies to make this site work. We would also like to set optional analytics cookies to understand how the site is used. Under India's DPDP Act you can decline, and nothing on this site depends on them. See our <a href="/privacy.html">Privacy Policy</a>.</p>
-    </div>
-    <div class="cookiebar__acts">
-      <button class="btn btn--ghost btn--sm" data-cookie="reject">Reject optional</button>
-      <button class="btn btn--blue btn--sm" data-cookie="accept">Accept all</button>
-    </div>
-    <button class="cookiebar__x" data-cookie="reject" aria-label="Close and reject optional cookies" title="Close — optional cookies stay off">${icons.close}</button>
-  </div>
-</div>`;
-
-/* ---- Loan Matcher --------------------------------------------------------
-   Deterministic scoring, rendered client-side. The result is framed as a
-   shortlist to check, never as an approval, an offer or a quoted rate. */
-function loanMatcher() {
-  const steps = matcherQuestions.map((q, k) => `<div class="mq ${k === 0 ? "is-active" : ""}" data-mq="${k}">
-      <span class="mq__count">Question ${k + 1} of ${matcherQuestions.length}</span>
-      <h3>${q.q}</h3>
-      <div class="mq__opts">
-        ${q.options.map(([label, value, ic]) => `<button type="button" class="mopt" data-mq-key="${q.id}" data-mq-val="${value}">
-          <span class="mopt__ic">${icons[ic] || icons.check}</span><span>${label}</span>
-        </button>`).join("")}
-      </div>
-    </div>`).join("");
-
-  return `<div class="matcher" data-matcher>
-    <div class="matcher__bar"><span data-mq-progress style="width:${100 / matcherQuestions.length}%"></span></div>
-    <div class="matcher__steps">${steps}</div>
-    <div class="matcher__result" data-mq-result hidden>
-      <span class="matcher__ic">${icons.checkCircle}</span>
-      <h3>Your shortlist</h3>
-      <p class="matcher__sub">Based on your answers. These are the products worth checking first — not an approval or an offer.</p>
-      <div class="matcher__cards" data-mq-cards></div>
-      <div class="matcher__acts">
-        <a class="btn btn--blue" href="/contact.html">Check my eligibility ${icons.arrowRight}</a>
-        <button class="btn btn--ghost" type="button" data-mq-restart>Start again</button>
-      </div>
-    </div>
-    <button class="matcher__back" type="button" data-mq-back hidden>${icons.chevronRight} Back</button>
-  </div>`;
-}
-
-/* ---- Compare tray --------------------------------------------------------
-   Sits on the loans overview. Selection is capped at three so the table stays
-   readable on a phone. */
-const compareTray = () => `<div class="cmptray" data-cmptray hidden>
-  <div class="container cmptray__in">
-    <span class="cmptray__count"><b data-cmp-count>0</b> selected <small>(up to 3)</small></span>
-    <div class="cmptray__chips" data-cmp-chips></div>
-    <div class="cmptray__acts">
-      <button class="btn btn--ghost btn--sm" type="button" data-cmp-clear>Clear</button>
-      <button class="btn btn--blue btn--sm" type="button" data-cmp-open>Compare ${icons.arrowRight}</button>
-    </div>
-  </div>
-</div>
-<div class="cmpmodal" data-cmpmodal role="dialog" aria-modal="true" aria-labelledby="cmt" hidden>
-  <div class="cmpmodal__card">
-    <div class="cmpmodal__head">
-      <h3 id="cmt">Compare loans</h3>
-      <button class="exitmodal__x" type="button" data-cmp-close aria-label="Close comparison">${icons.close}</button>
-    </div>
-    <div class="cmpmodal__body" data-cmp-table></div>
-    <p class="cmpmodal__note">${icons.info} Rates and amounts are indicative market ranges for each product. Your actual terms are set by the lender after assessment.</p>
-  </div>
-</div>`;
-
-/* ---- Callback strip ------------------------------------------------------ */
-const callbackForm = () => `<form class="callback" data-callback>
-  <span class="callback__lab">${icons.phone} Prefer we call you?</span>
-  <input class="callback__input" type="tel" name="mobile" required pattern="[0-9+ ]{10,15}" placeholder="Your mobile number" aria-label="Your mobile number">
-  <button class="btn btn--gold btn--sm" type="submit">Request a Callback</button>
-  <label class="callback__consent"><input type="checkbox" name="consent" required><span>I agree to the <a href="/privacy.html">Privacy Policy</a> and to being contacted.</span></label>
-  <span class="form-ok form-ok--inline" hidden>${icons.checkCircle} Thanks — an advisor will call you shortly.</span>
-</form>`;
-
-/* ---- Trust ticker --------------------------------------------------------
-   Rotates the figures ELOANSS actually publishes. Deliberately NOT fabricated
-   "someone just got approved" events: ELOANSS does not approve loans, and
-   inventing individual outcomes would be a false claim about lending. */
-const trustTicker = () => `<div class="ticker" data-ticker hidden>
-  <span class="ticker__ic">${icons.shield}</span>
-  <span data-ticker-text></span>
-  <button class="ticker__x" type="button" data-ticker-close aria-label="Dismiss">${icons.close}</button>
-</div>`;
 
 /* ---- Reusable sections --------------------------------------------------- */
 
@@ -465,11 +322,6 @@ function emiCalculator(cfg, { compact = false } = {}) {
         <div class="r"><span>Total Payable</span><b data-out-total></b></div>
       </div>
       ${compact ? "" : `<a class="btn btn--gold btn--block mt" href="/contact.html">Get My Best Offer ${icons.arrowRight}</a>`}
-      <div class="fees" data-fees>
-        <button class="fees__toggle" type="button" data-fee-toggle aria-expanded="false">${icons.info} What else will I pay? ${icons.chevronDown}</button>
-        <div class="fees__body" data-fee-list></div>
-        <p class="fees__note">Indicative. Processing fee and GST are charged by the lender, not by ${site.name}, and foreclosure terms differ between lenders.</p>
-      </div>
       <p class="emi__note">Indicative estimate. Final EMI depends on the lender's approved rate and terms.</p>
     </div>
   </div>`;
@@ -481,15 +333,7 @@ function faqSection(faqs, title = "Frequently Asked Questions") {
     <button class="faq__q">${q}<span class="pm">${'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>'}</span></button>
     <div class="faq__a"><p>${a}</p></div>
   </div>`).join("");
-  const ld = JSON.stringify({
-    "@context": "https://schema.org", "@type": "FAQPage",
-    mainEntity: faqs.map(([q, a]) => ({
-      "@type": "Question", name: q,
-      acceptedAnswer: { "@type": "Answer", text: String(a).replace(/<[^>]+>/g, "") },
-    })),
-  });
-  return `<script type="application/ld+json">${ld}</script>
-  <section class="section section--soft"><div class="container">
+  return `<section class="section section--soft"><div class="container">
     <div class="section-head reveal"><span class="eyebrow">FAQs</span><h2>${title}</h2><p>Everything you need to know. Still have questions? Our experts are a call away.</p></div>
     <div class="faq reveal">${items}</div>
   </div></section>`;
@@ -535,7 +379,6 @@ function applicationForm(productName = "") {
       <button type="button" class="btn btn--navy" data-next>Continue ${icons.arrowRight}</button>
       <button type="submit" class="btn btn--gold" style="display:none">Submit Application</button>
     </div>
-    ${securityBadges()}
     <div class="form-ok" hidden>
       <span class="ic">${icons.checkCircle}</span>
       <h4>Thank you! Your enquiry is submitted.</h4>
@@ -553,6 +396,4 @@ function applicationForm(productName = "") {
   </script>`;
 }
 
-module.exports = { head, header, footer, brand, floatingActions, complianceNote, emiCalculator, faqSection, applicationForm, waLink,
-  consentCheck, securityBadges, cookieBanner, exitModal,
-  loanMatcher, compareTray, callbackForm, trustTicker };
+module.exports = { head, header, footer, brand, floatingActions, complianceNote, emiCalculator, faqSection, applicationForm, waLink };

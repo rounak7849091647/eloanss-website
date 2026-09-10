@@ -7,7 +7,7 @@ Pages, S3, cPanel, or any web host) with no runtime or database.
 
 - **Brand:** Deep Emerald `#075E45` · Soft Gold `#C9A227` · Warm Ivory `#FAF9F4`
 - **Fonts:** Poppins (headings) + Inter (body) via Google Fonts
-- **65 pages** generated: Home, Loans (overview + 12 loan types), Insurance (overview +
+- **64 pages** generated: Home, Loans (overview + 12 loan types), Insurance (overview +
   7 types), Banks & NBFCs (overview + a page per partner), Credit Cards, Credit Score,
   Calculators, Investments,
   Share Markets, About, Partner (Global Distributor), How It Works, Blog
@@ -80,27 +80,6 @@ eloanss-website/
 │  └─ assets/{css,js}
 └─ dist/               # ← generated output; deploy THIS folder
 ```
-
-## Interactive features
-
-| Feature | Where | Notes |
-| --- | --- | --- |
-| Loan Matcher | homepage `#matcher` | 4 questions scored against `matcherProfiles` in `data.js`. Deterministic, client-side. Presented as a shortlist, never an approval. |
-| Compare | `/loans.html` | Up to 3 products side by side. Cap keeps the table readable on a phone. |
-| Track Application | `/track-application.html` | **Demonstration only** — no backend. A reference of the form `ELN-YYYY-NNNNNN` returns a deterministic sample stage, so the same input always shows the same result. Labelled as a demo on the page. |
-| Callback strip | hero | Single field plus required consent. |
-| Trust ticker | site-wide | Rotates the aggregate figures ELOANSS publishes. |
-| Exit intent | site-wide | Once per visitor, pointer devices only. |
-| EMI fee breakdown | every EMI widget | Processing fee, GST, upfront total; foreclosure marked lender-dependent. |
-
-### On social proof
-
-The brief asked for notifications of the form “Rahul from Mumbai just got a ₹5L loan
-approved”. That was **not** built. ELOANSS does not approve loans — lenders do — so
-inventing individual approval events would be a false claim about lending outcomes on a
-regulated-adjacent site. The ticker carries real published aggregates instead. If a genuine
-feed of consented, anonymised enquiries becomes available, `window.__ELOANSS_TRUST` is
-where it would plug in.
 
 ## Colour palette
 

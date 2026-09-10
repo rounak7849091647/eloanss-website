@@ -3,7 +3,6 @@ const fs = require("fs");
 const path = require("path");
 const { site, loans, insurance, posts, lenders } = require("./src/data");
 const P = require("./src/pages");
-const { minifyCSS, minifyJS, minifyHTML } = require("./src/minify");
 
 const ROOT = __dirname;
 const OUT = path.join(ROOT, "dist");
@@ -15,17 +14,14 @@ function ensure(p) { fs.mkdirSync(p, { recursive: true }); }
 function write(rel, html) {
   const full = path.join(OUT, rel);
   ensure(path.dirname(full));
-  fs.writeFileSync(full, rel.endsWith(".html") ? minifyHTML(html) : html, "utf8");
+  fs.writeFileSync(full, html, "utf8");
   return rel;
 }
 function copyDir(src, dest) {
   ensure(dest);
   for (const entry of fs.readdirSync(src, { withFileTypes: true })) {
     const s = path.join(src, entry.name), d = path.join(dest, entry.name);
-    if (entry.isDirectory()) { copyDir(s, d); continue; }
-    if (entry.name.endsWith(".css")) fs.writeFileSync(d, minifyCSS(fs.readFileSync(s, "utf8")), "utf8");
-    else if (entry.name.endsWith(".js")) fs.writeFileSync(d, minifyJS(fs.readFileSync(s, "utf8")), "utf8");
-    else fs.copyFileSync(s, d);
+    entry.isDirectory() ? copyDir(s, d) : fs.copyFileSync(s, d);
   }
 }
 
@@ -93,7 +89,6 @@ function build() {
   written.push(write("calculators.html", P.calculatorsPage()));
   written.push(write("investments.html", P.investmentsPage()));
   written.push(write("business-finance.html", P.businessFinancePage()));
-  written.push(write("track-application.html", P.trackApplicationPage()));
 
   loans.forEach((l) => written.push(write(`loans/${l.slug}.html`, P.loanPage(l))));
   insurance.forEach((i) => written.push(write(`insurance/${i.slug}.html`, P.insurancePage(i))));

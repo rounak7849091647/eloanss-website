@@ -6,8 +6,7 @@ const { site, loans, insurance, steps, testimonials, posts, partnerBenefits,
   appPoints, businessFinance, lenderProfiles, LENDER_KIND, BANK_HIGHLIGHTS, NBFC_HIGHLIGHTS, GOLD_HIGHLIGHTS } = require("./data");
 const C = require("./components");
 
-const layout = (meta, active, body) =>
-  C.head(meta) + C.header(active) + `<main id="main">` + body + `</main>` + C.footer();
+const layout = (meta, active, body) => C.head(meta) + C.header(active) + body + C.footer();
 
 const findLoan = (slug) => loans.find((l) => l.slug === slug);
 const findIns = (slug) => insurance.find((i) => i.slug === slug);
@@ -132,7 +131,6 @@ function home() {
         <a class="btn btn--outline-light btn--lg" href="/credit-score.html">Check Free Credit Score</a>
       </div>
       <ul class="vhero__chips">${chips}</ul>
-      ${C.callbackForm()}
     </div>
   </div>
   <div class="vhero__statbar">
@@ -169,14 +167,6 @@ function home() {
   </div>
 </section>
 
-<!-- ============================================ LOAN MATCHER -->
-<section class="section section--soft" id="matcher">
-  <div class="container">
-    <div class="section-head reveal"><span class="eyebrow">Not sure where to start?</span><h2>Find your loan in four questions</h2><p>Answer four quick questions and we will shortlist the products worth checking first.</p></div>
-    <div class="narrow reveal">${C.loanMatcher()}</div>
-  </div>
-</section>
-
 <!-- ============================================ SCORE · EMI · PROMO -->
 <section class="section trio" id="calculators">
   <div class="container trio__grid">
@@ -187,9 +177,7 @@ function home() {
       <div class="score__body">
         <form class="score__form" data-simpleform>
           <input class="input" type="tel" name="mobile" required placeholder="Enter your mobile number" aria-label="Mobile number">
-          ${C.consentCheck("cs-" + Math.random().toString(36).slice(2, 8))}
           <button class="btn btn--blue btn--block" type="submit">Get My Free Score ${icons.arrowRight}</button>
-          ${C.securityBadges()}
           <span class="form-ok form-ok--inline" hidden>${icons.checkCircle} We'll text your score shortly.</span>
         </form>
         <div class="gauge">
@@ -402,7 +390,6 @@ function home() {
           <div class="field"><label>Card Type</label><select class="select" name="cardType"><option value="">Select Card Type</option>${cardTypes.map((c) => `<option>${c}</option>`).join("")}</select></div>
           <div class="field"><label>Annual Income</label><select class="select" name="income"><option value="">Select Income Range</option>${incomeBands.map((c) => `<option>${c}</option>`).join("")}</select></div>
           <div class="field"><label>Preferred Bank</label><select class="select" name="bank"><option value="">Select Bank</option>${lenders.slice(0, 12).map(([n]) => `<option>${n}</option>`).join("")}</select></div>
-          ${C.consentCheck("cc-" + Math.random().toString(36).slice(2, 8))}
           <button class="btn btn--blue" type="submit">Compare Now ${icons.arrowRight}</button>
           <span class="form-ok form-ok--inline" hidden>${icons.checkCircle} Matching cards — an advisor will call you.</span>
         </form>
@@ -502,9 +489,7 @@ function contactBlock() {
 
 /* ============================================================= LOAN OVERVIEW */
 function loansOverview() {
-  const cards = loans.map((l, k) => `<div class="card reveal" data-d="${k % 3}" data-cmp-item="${l.slug}"
-      data-cmp-name="${l.name.replace(" / Mortgage Loan", " / Mortgage")}" data-cmp-rate="${l.rate} p.a." data-cmp-amount="${l.amount}" data-cmp-tenure="${l.tenure}">
-    <label class="cmpcheck"><input type="checkbox" data-cmp-toggle><span>Compare</span></label>
+  const cards = loans.map((l, k) => `<div class="card reveal" data-d="${k % 3}">
     <span class="card__ic">${icons[l.icon]}</span>
     <h3>${l.name.replace(" / Mortgage Loan", " / Mortgage")}</h3>
     <p>${l.tagline}</p>
@@ -545,8 +530,6 @@ ${howItWorksStrip()}
   </div></div>
 </div></section>
 
-${C.compareTray()}
-
 ${catalogueSection(loanCatalogue, "loan-catalogue", "All 105 loan products we facilitate", "Nine categories, every product in each. Pick one to see rates, eligibility and documents.")}
 
 ${ctaBand("Not sure which loan is right for you?", "Talk to an ELOANSS expert. We'll understand your needs and recommend the best option — free and without obligation.")}`;
@@ -556,23 +539,6 @@ ${ctaBand("Not sure which loan is right for you?", "Talk to an ELOANSS expert. W
 
 /* =============================================================== LOAN PAGE */
 function loanPage(l) {
-  /* FinancialProduct rich-result data. Rates are ranges, and interestRate is
-     omitted deliberately: schema.org expects a single number and ELOANSS
-     cannot quote one, since the lender sets it. */
-  const productLd = JSON.stringify({
-    "@context": "https://schema.org", "@type": "FinancialProduct",
-    name: l.name, description: l.tagline,
-    url: "https://" + site.domain + "/loans/" + l.slug + ".html",
-    provider: { "@type": "FinancialService", name: site.name, url: "https://" + site.domain },
-    areaServed: { "@type": "Country", name: "India" },
-    feesAndCommissionsSpecification:
-      "Free for customers. ELOANSS is a facilitator and is paid a commission by the lender.",
-    additionalProperty: [
-      { "@type": "PropertyValue", name: "Indicative interest rate", value: l.rate + " p.a." },
-      { "@type": "PropertyValue", name: "Loan amount", value: l.amount },
-      { "@type": "PropertyValue", name: "Tenure", value: l.tenure },
-    ],
-  });
   const benefits = l.benefits.map(([t, d], k) => `<div class="card reveal" data-d="${k % 3}"><span class="card__ic">${icons.checkCircle}</span><h3>${t}</h3><p class="mb0">${d}</p></div>`).join("");
   const elig = l.eligibility.map((e) => `<li>${icons.checkCircle ? '<span class="ic">' + icons.check + '</span>' : ''}<span><b>${e}</b></span></li>`).join("");
   const docs = l.documents.map((d) => `<li><span class="ic">${icons.fileText}</span>${d}</li>`).join("");
@@ -580,7 +546,6 @@ function loanPage(l) {
   const cross = (l.crossSell || []).map((s) => `<a class="card reveal" href="${catLink(s)}"><span class="card__ic">${catIcon(s)}</span><h3>${catName(s)}</h3><p class="mb0">Recommended alongside your ${l.name.replace(" / Mortgage Loan", "")}.</p><br><span class="card__link">Get a quote ${icons.arrowRight}</span></a>`).join("");
 
   const body = `
-<script type="application/ld+json">${productLd}</script>
 <section class="phero"><div class="container"><div class="phero__inner">
   <div>
     ${crumbs([["Home", "/index.html"], ["Loans", "/loans.html"], [l.name]])}
@@ -1180,8 +1145,7 @@ function creditCardsPage() {
         <div class="field"><label>Card Type</label><select class="select" name="cardType"><option value="">Select Card Type</option>${cardTypes.map((c) => `<option>${c}</option>`).join("")}</select></div>
         <div class="field"><label>Annual Income</label><select class="select" name="income"><option value="">Select Income Range</option>${incomeBands.map((c) => `<option>${c}</option>`).join("")}</select></div>
         <div class="field"><label>Preferred Bank</label><select class="select" name="bank"><option value="">Select Bank</option>${lenders.slice(0, 12).map(([n]) => `<option>${n}</option>`).join("")}</select></div>
-        ${C.consentCheck("cc-" + Math.random().toString(36).slice(2, 8))}
-          <button class="btn btn--blue" type="submit">Compare Now ${icons.arrowRight}</button>
+        <button class="btn btn--blue" type="submit">Compare Now ${icons.arrowRight}</button>
         <span class="form-ok form-ok--inline" hidden>${icons.checkCircle} Matching cards — an advisor will call you.</span>
       </form>
     </div>
@@ -1267,9 +1231,7 @@ function creditScorePage() {
       <div class="score__body">
         <form class="score__form" data-simpleform>
           <input class="input" type="tel" name="mobile" required placeholder="Enter your mobile number" aria-label="Mobile number">
-          ${C.consentCheck("cs-" + Math.random().toString(36).slice(2, 8))}
           <button class="btn btn--blue btn--block" type="submit">Get My Free Score ${icons.arrowRight}</button>
-          ${C.securityBadges()}
           <span class="form-ok form-ok--inline" hidden>${icons.checkCircle} We'll text your score shortly.</span>
         </form>
         <div class="gauge">
@@ -1377,9 +1339,7 @@ function calculatorsPage() {
           <select class="select" name="product" required><option value="">Select</option>${loans.map((l) => `<option>${l.name}</option>`).join("")}</select></div>
       </div>
       <div class="field"><label>Mobile number <span class="req">*</span></label><input class="input" type="tel" name="mobile" required placeholder="10-digit mobile"></div>
-      ${C.consentCheck("el-" + Math.random().toString(36).slice(2, 8))}
       <button class="btn btn--blue btn--block" type="submit">Check My Eligibility ${icons.arrowRight}</button>
-      ${C.securityBadges()}
       <div class="form-ok" hidden>
         <span class="ic">${icons.checkCircle}</span>
         <h4>Thanks — we have what we need.</h4>
@@ -1730,63 +1690,9 @@ ${ctaBand("Ready to size your facility?", "Send us your turnover, banking and GS
   }, "bizfin", body);
 }
 
-/* ============================================== TRACK APPLICATION (demo) */
-function trackApplicationPage() {
-  const stages = [
-    ["Application received", "We have your details and documents.", "fileText"],
-    ["Under review", "Our advisor is matching you to the right lenders.", "search"],
-    ["Submitted to lender", "Your file is with the lender for credit assessment.", "bank"],
-    ["Sanction decision", "The lender confirms the amount, rate and terms.", "checkCircle"],
-    ["Disbursal", "Funds are released to your account.", "rupee"],
-  ].map(([t, d, ic], k) => `<li class="trk__step" data-trk-step="${k}">
-      <span class="trk__dot">${icons[ic]}</span>
-      <div><b>${t}</b><span>${d}</span></div>
-    </li>`).join("");
-
-  const body = `
-<section class="phero"><div class="container"><div class="phero__inner"><div>
-  ${crumbs([["Home", "/index.html"], ["Track Application"]])}
-  <h1>Track Your Application</h1>
-  <p>Enter your reference number to see where your file has reached.</p>
-</div>
-<div class="phero__card reveal" data-d="1">
-  <form class="trkform" data-trackform>
-    <div class="field"><label for="trkref">Application reference</label>
-      <input class="input" id="trkref" name="ref" required placeholder="e.g. ELN-2026-014529" autocomplete="off"></div>
-    <button class="btn btn--gold btn--block" type="submit">Track ${icons.arrowRight}</button>
-    <p class="trkform__hint">${icons.info} Demonstration only — this page is not yet wired to a live application system. Any reference in the format <b>ELN-YYYY-NNNNNN</b> returns a sample timeline.</p>
-  </form>
-</div></div></div></section>
-
-<section class="section"><div class="container narrow">
-  <div class="trk" data-trk hidden>
-    <div class="trk__head">
-      <div><span class="eyebrow">Reference</span><b data-trk-ref></b></div>
-      <span class="pill" data-trk-status></span>
-    </div>
-    <ol class="trk__steps">${stages}</ol>
-    <p class="trk__note">${icons.info} Sample data. Timelines vary by lender and by how quickly documents are supplied.</p>
-    <a class="btn btn--blue" href="/contact.html">Talk to my advisor ${icons.arrowRight}</a>
-  </div>
-  <div class="trk__empty reveal" data-trk-empty>
-    <span class="trk__eic">${icons.search}</span>
-    <h3>No reference yet?</h3>
-    <p>You receive a reference by SMS as soon as an application is submitted. If you have applied and not received one, call us on <a href="tel:${site.phoneHref}">${site.phone}</a> and we will look it up.</p>
-  </div>
-</div></section>
-
-${ctaBand("Not applied yet?", "Start with a free eligibility check — it takes two minutes and puts no hard enquiry on your credit report.", "Check Eligibility", "/contact.html")}`;
-
-  return layout({
-    title: "Track Your Application",
-    description: `Check the status of your ${site.name} loan or insurance application with your reference number.`,
-    path: "track-application.html",
-  }, "track", body);
-}
-
 module.exports = {
   home, loansOverview, loanPage, insuranceOverview, insurancePage, shareMarkets,
   about, partner, howItWorks, blog, blogPost, contact, legalPage,
   banksPage, creditCardsPage, creditScorePage, calculatorsPage, investmentsPage, bankPage,
-  businessFinancePage, trackApplicationPage,
+  businessFinancePage,
 };
