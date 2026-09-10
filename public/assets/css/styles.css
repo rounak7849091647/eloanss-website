@@ -1989,7 +1989,7 @@ input[type="range"]::-webkit-slider-thumb { margin-top: 0; }
    Uncapped, the dial stretched to the full column and read as a huge, heavy
    arc with the readout sitting on the needle pivot. Cap it and drop the
    readout clear of the pivot instead of pulling it up over the dial. */
-.gauge { max-width: 250px; margin-inline: auto; }
+.gauge { max-width: 200px; margin-inline: auto; }
 .gauge svg { display: block; }
 .gauge__val { margin-top: 4px; }
 .gauge__val b { font-size: 1.45rem; letter-spacing: -.01em; }
@@ -1997,7 +1997,7 @@ input[type="range"]::-webkit-slider-thumb { margin-top: 0; }
 .gauge__scale { margin-top: 4px; }
 [data-gauge-arc] { transition: stroke-dashoffset .9s ease; }
 @media (max-width: 620px) {
-  .gauge { max-width: 230px; }
+  .gauge { max-width: 186px; }
   .gauge__val { margin-top: 4px; }
   .gauge__val b { font-size: 1.5rem; }
 }
