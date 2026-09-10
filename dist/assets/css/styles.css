@@ -2006,3 +2006,11 @@ input[type="range"]::-webkit-slider-thumb { margin-top: 0; }
    column; stack it so the dial gets the full card width at its capped size */
 .score__body { grid-template-columns: 1fr; gap: 16px; }
 .score__form { max-width: 320px; margin-inline: auto; width: 100%; }
+
+/* footer contact block (address, phone, email, hours) in the brand column */
+.footer__contact { display: grid; gap: 10px; margin: 16px 0; }
+.footer__contact li { display: flex; gap: 10px; align-items: flex-start; font-size: .82rem; line-height: 1.55; color: #BFDCD1; }
+.footer__contact svg { width: 16px; height: 16px; color: var(--gold); flex: none; margin-top: 3px; }
+.footer__contact a { color: #BFDCD1; }
+.footer__contact a:hover { color: var(--gold); }
+:root[data-theme="navy"] .footer__contact li, :root[data-theme="navy"] .footer__contact a { color: #C3D8DE; }

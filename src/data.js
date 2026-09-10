@@ -4,11 +4,13 @@ const site = {
   name: "ELOANSS",
   tagline: "Your Trusted Partner for Loans, Insurance & Investments",
   domain: "eloanss.com",
-  phone: "+91 90000 00000",
-  phoneHref: "+919000000000",
-  whatsapp: "919000000000",
+  phone: "+91 90308 14455",
+  phoneHref: "+919030814455",
+  // WhatsApp deep-link target. Set to the main line — change if WhatsApp is a different number.
+  whatsapp: "919030814455",
   email: "care@eloanss.com",
-  address: "3rd Floor, Fintech Tower, Financial District, Nanakramguda, Hyderabad, Telangana 500032",
+  // Rendered into HTML text, so the ampersand is escaped here.
+  address: "#8-3-903/F/7&amp;10, Ratna Complex, Flat No: 404, Opp. R.S. Brothers, Y R Guda, Ameerpet, Hyderabad – 500038",
   rating: "4.8",
   reviews: "12,400+",
   customers: "50,000+",

@@ -443,7 +443,7 @@ function home() {
         <li>${icons.mail}<a href="mailto:${site.email}">${site.email}</a></li>
         <li>${icons.clock}<span>Mon – Sat: 10:00 AM – 7:00 PM</span></li>
       </ul>
-      <iframe class="map map--sm" title="ELOANSS office location" loading="lazy" src="https://www.google.com/maps?q=Financial+District+Hyderabad&output=embed"></iframe>
+      <iframe class="map map--sm" title="ELOANSS office location" loading="lazy" src="https://www.google.com/maps?q=Ratna+Complex+Opp+R.S.+Brothers+Ameerpet+Hyderabad+500038&amp;output=embed"></iframe>
       <a class="btn btn--blue btn--sm btn--block" href="/contact.html">Get Directions ${icons.arrowRight}</a>
     </div>
 
@@ -479,7 +479,7 @@ function contactBlock() {
           <div class="info-row"><span class="ic">${icons.mail}</span><div><b>Email</b><a href="mailto:${site.email}">${site.email}</a></div></div>
           <div class="info-row"><span class="ic">${icons.clock}</span><div><b>Working hours</b><span>Mon–Sat, 10:00 AM – 7:00 PM</span></div></div>
         </div>
-        <iframe class="map" title="ELOANSS office location" loading="lazy" src="https://www.google.com/maps?q=Financial+District+Hyderabad&output=embed"></iframe>
+        <iframe class="map" title="ELOANSS office location" loading="lazy" src="https://www.google.com/maps?q=Ratna+Complex+Opp+R.S.+Brothers+Ameerpet+Hyderabad+500038&amp;output=embed"></iframe>
       </div>
       <div class="reveal" data-d="1">${C.applicationForm()}</div>
     </div>

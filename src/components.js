@@ -43,7 +43,7 @@ function head({ title, description, path }) {
 <script>(function(){try{var t=localStorage.getItem("eloanss-theme");if(t==="dark"||t==="light"||t==="navy")document.documentElement.setAttribute("data-theme",t);}catch(e){}})();</script>
 <link rel="stylesheet" href="/assets/css/styles.css?v=${CSS_V}">
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"FinancialService","name":"${site.name}","description":"${site.tagline}","url":"https://${site.domain}","telephone":"${site.phone}","email":"${site.email}","address":{"@type":"PostalAddress","streetAddress":"Fintech Tower, Financial District","addressLocality":"Hyderabad","addressRegion":"Telangana","postalCode":"500032","addressCountry":"IN"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"${site.rating}","reviewCount":"12400"}}
+{"@context":"https://schema.org","@type":"FinancialService","name":"${site.name}","description":"${site.tagline}","url":"https://${site.domain}","telephone":"${site.phone}","email":"${site.email}","address":{"@type":"PostalAddress","streetAddress":"#8-3-903/F/7&10, Ratna Complex, Flat No: 404, Opp. R.S. Brothers, Y R Guda, Ameerpet","addressLocality":"Hyderabad","addressRegion":"Telangana","postalCode":"500038","addressCountry":"IN"},"aggregateRating":{"@type":"AggregateRating","ratingValue":"${site.rating}","reviewCount":"12400"}}
 </script>
 </head>
 <body>`;
@@ -205,6 +205,12 @@ function footer() {
       <div class="footer__brandcol">
         ${brand("/", "brand--light")}
         <p class="footer__about">${site.tagline}. We compare offers from ${site.partners} banks and NBFCs so you get the best deal — fast, transparent and expert-guided.</p>
+        <ul class="footer__contact">
+          <li>${icons.mapPin}<span>${site.address}</span></li>
+          <li>${icons.phone}<a href="tel:${site.phoneHref}">${site.phone}</a></li>
+          <li>${icons.mail}<a href="mailto:${site.email}">${site.email}</a></li>
+          <li>${icons.clock}<span>Mon–Sat, 10:00 AM – 7:00 PM</span></li>
+        </ul>
         <div class="footer__social">
           <a href="#" aria-label="Facebook">${icons.facebook}</a>
           <a href="#" aria-label="Instagram">${icons.instagram}</a>
